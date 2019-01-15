@@ -113,7 +113,7 @@ class ExperimentTable extends React.Component {
 
   render() {
     const {userSearch, userKingdom, checkedArray, userNumber, currentPage} = this.state
-    const dataArray = userSearch ? this.sort(this.props.aaData).filter(data => data && Object.values(data).some(value => value.toString().includes(userSearch))) :
+    const dataArray = userSearch ? this.sort(this.props.aaData).filter(data => data && Object.values(data).some(value => value.toString().toLowerCase().includes(userSearch.toLowerCase()))) :
       this.filter(this.sort(this.props.aaData)).filter(data=> userKingdom ? data.kingdom===userKingdom : true)
     const currentPageData = userNumber ? dataArray.slice(userNumber*(currentPage-1), userNumber*currentPage) : dataArray
 

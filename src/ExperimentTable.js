@@ -165,7 +165,7 @@ class ExperimentTable extends React.Component {
                 <Table.TextCell flexBasis={60} flexShrink={0} flexGrow={0}>{`${index + 1 + userNumber*(currentPage-1)} `}</Table.TextCell>
                 <Table.TextCell flexBasis={160} flexShrink={0} flexGrow={0}>{data.lastUpdate}</Table.TextCell>
                 <Table.TextCell flexBasis={160} flexShrink={0} flexGrow={0}>{data.species}</Table.TextCell>
-                <Table.TextCell flexBasis={360} flexShrink={0} flexGrow={0}>{data.experimentDescription}</Table.TextCell>
+                <Table.Cell flexBasis={360} flexShrink={0} flexGrow={0}>{data.experimentDescription}</Table.Cell>
                 <Table.TextCell flexBasis={260} flexShrink={0} flexGrow={0}>
                   <ul>{data.experimentalFactors.map(factor => <li key={index+factor}>{factor}</li>)}</ul>
                 </Table.TextCell>

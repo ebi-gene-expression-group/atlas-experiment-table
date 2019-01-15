@@ -171,7 +171,7 @@ class ExperimentTable extends React.Component {
                 </Table.TextCell>
                 <Table.TextCell flexBasis={160} flexShrink={0} flexGrow={0}>{data.numberOfAssays}</Table.TextCell>
                 <Table.TextCell flexBasis={60} flexShrink={0} flexGrow={0}>
-                  <input type="checkbox" onChange={()=>this.handleCheckbox(data.experimentAccession)} />
+                  <input type="checkbox" checked={checkedArray.includes(data.experimentAccession)} onChange={()=>this.handleCheckbox(data.experimentAccession)} />
                 </Table.TextCell>
               </Table.Row>)
           })
@@ -191,7 +191,7 @@ class ExperimentTable extends React.Component {
             </li>
             <li className="paginate_button current" aria-controls="experiments-table" tabIndex="0">{currentPage}</li>
             <li className={this.props.aaData.length>currentPage*userNumber ? `paginate_button next`:`paginate_button next unavailable disabled`} aria-controls="experiments-table" tabIndex="0"
-              id="experiments-table_next" onClick={()=>{this.props.aaData.length>currentPage*userNumber &&this.setState({currentPage: currentPage+1})}}>Next
+              id="experiments-table_next" onClick={()=>{this.props.aaData.length>currentPage*userNumber && this.setState({currentPage: currentPage+1})}}>Next
             </li>
           </ul>
         </div>

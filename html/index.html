@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="https://www.ebi.ac.uk/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css" type="text/css" media="all" />
 
     <link rel="stylesheet" href="https://www.ebi.ac.uk/gxa/resources/css/foundation/atlas.css" type="text/css" media="all">
+
+    <link rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/css/ebi-global.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.3/fonts.css" type="text/css" media="all" />
+
 </head>
 
 <body>
@@ -20,12 +24,16 @@
 </body>
 
 <script src="../dist/vendors.bundle.js"></script>
-<script src="../dist/myComponent.bundle.js"></script>
-<script src="../dist/myComponentDemo.bundle.js"></script>
+<script src="../dist/experimentTable.bundle.js"></script>
 
 <!-- Set to http://localhost:8080/gxa/ or http://localhost:8080/gxa_sc/ -- Remember the trailing slash! -->
 <script>
-  myComponent.render({}, 'target')
+  experimentTable.render({
+    host: 'http://localhost:8080/gxa/sc/',
+    resource: 'json/experiments',
+    noResultsMessageFormatter: function(data) { return 'Your search yielded no results: ' + data.reason; }
+
+  }, 'target');
 </script>
 
 </html>

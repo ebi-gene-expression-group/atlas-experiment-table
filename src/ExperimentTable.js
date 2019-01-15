@@ -139,7 +139,7 @@ class ExperimentTable extends React.Component {
           <option value="2">2</option>
           <option value="3">3</option>
           <option value="100">100</option>
-          <option value="">All</option>
+          <option value={this.props.aaData.length}>All</option>
         </SelectField>
         <TextInputField
           label="Search all columns"
@@ -190,8 +190,8 @@ class ExperimentTable extends React.Component {
               id="experiments-table_previous"  onClick={()=>{currentPage>1&&this.setState({currentPage: currentPage-1})}} >Previous
             </li>
             <li className="paginate_button current" aria-controls="experiments-table" tabIndex="0">{currentPage}</li>
-            <li className={this.props.aaData.length>currentPage*userNumber ? `paginate_button next`:`paginate_button next unavailable disabled`} aria-controls="experiments-table" tabIndex="0"
-              id="experiments-table_next" onClick={()=>{this.props.aaData.length>currentPage*userNumber && this.setState({currentPage: currentPage+1})}}>Next
+            <li className={dataArray.length>=currentPage*userNumber ? `paginate_button next`:`paginate_button next unavailable disabled`} aria-controls="experiments-table" tabIndex="0"
+              id="experiments-table_next" onClick={()=>{dataArray.length>=currentPage*userNumber && this.setState({currentPage: currentPage+1})}}>Next
             </li>
           </ul>
         </div>

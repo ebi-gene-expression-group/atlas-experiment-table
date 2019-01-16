@@ -5,13 +5,8 @@
 
     <link rel="stylesheet" href="https://www.ebi.ac.uk/web_guidelines/EBI-Framework/v1.2/libraries/foundation-6/css/foundation.css" type="text/css" media="all" />
     <link rel="stylesheet" href="https://www.ebi.ac.uk/web_guidelines/EBI-Framework/v1.2/css/ebi-global.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="https://www.ebi.ac.uk/web_guidelines/EBI-Icon-fonts/v1.2/fonts.css" type="text/css" media="all" />
-
-    <link rel="stylesheet" href="https://www.ebi.ac.uk/gxa/resources/css/foundation/atlas.css" type="text/css" media="all">
-
-    <link rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Framework/v1.3/css/ebi-global.css" type="text/css" media="all" />
     <link rel="stylesheet" href="https://ebi.emblstatic.net/web_guidelines/EBI-Icon-fonts/v1.3/fonts.css" type="text/css" media="all" />
-
+    <link rel="stylesheet" href="https://www.ebi.ac.uk/gxa/sc/resources/css/theme-atlas.css" type="text/css" media="all">
 </head>
 
 <body>
@@ -25,14 +20,26 @@
 
 <script src="../dist/vendors.bundle.js"></script>
 <script src="../dist/experimentTable.bundle.js"></script>
-
 <!-- Set to http://localhost:8080/gxa/ or http://localhost:8080/gxa_sc/ -- Remember the trailing slash! -->
 <script>
   experimentTable.render({
     host: 'http://localhost:8080/gxa/sc/',
     resource: 'json/experiments',
-    noResultsMessageFormatter: function(data) { return 'Your search yielded no results: ' + data.reason; }
-
+    //link to `${host}/${header.resource}/${data[header.link]}/${header.endpoint}`
+    tableHeader:
+        [
+          //{type: `plain`, title: `index`, width: 60, dataParam: null, link: null},
+          {type: `sort`, title: `Loaded date`, width: 140, dataParam: `lastUpdate`, link: null},
+          {type: `search`, title: `species`, width: 200, dataParam: `species`, link: null},
+          {type: `search`, title: `experiment description`, width: 360, dataParam: `experimentDescription`,
+            link: `experimentAccession`, resource: `experiments`, endpoint: `Results`},
+          {type: `search`, title: `experiment factors`, width: 260, dataParam: `experimentalFactors`, link: null},
+          {type: `sort`, title: `Number of assays`, width: 160, dataParam: `numberOfAssays`,
+            link: `experimentAccession`, resource: `experiments`, endpoint: `Experiment Design`},
+          //{type: `plain`, title: `Download`, width: null,  dataParam: null}
+        ],
+    noResultsMessageFormatter: function(data) { return 'Your search yielded no results: ' + data.reason },
+    enableDownload: false
   }, 'target');
 </script>
 

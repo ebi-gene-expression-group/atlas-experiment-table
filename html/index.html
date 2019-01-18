@@ -29,13 +29,13 @@
     tableHeader:
         [
           //{type: `plain`, title: `index`, width: 60, dataParam: null, link: null},
-          {type: `sort`, title: `Loaded date`, width: 140, dataParam: `lastUpdate`, link: null},
-          {type: `search`, title: `species`, width: 200, dataParam: `species`, link: null},
+          {type: `sort`, title: `Loaded date`, width: 140, dataParam: `lastUpdate`},
+          {type: `search`, title: `species`, width: 200, dataParam: `species`},
           {type: `search`, title: `experiment description`, width: 360, dataParam: `experimentDescription`,
             link: `experimentAccession`, resource: `experiments`, endpoint: `Results`},
-          {type: `search`, title: `experiment factors`, width: 260, dataParam: `experimentalFactors`, link: null},
+          {type: `search`, title: `experiment factors`, width: 260, dataParam: `experimentalFactors`},
           {type: `sort`, title: `Number of assays`, width: 160, dataParam: `numberOfAssays`,
-            link: `experimentAccession`, resource: `experiments`, endpoint: `Experiment Design`},
+            link: `experimentAccession`, resource: `experiments`, endpoint: `Experiment%20Design`},
           //{type: `plain`, title: `Download`, width: null,  dataParam: null}
         ],
     noResultsMessageFormatter: function(data) { return 'Your search yielded no results: ' + data.reason },

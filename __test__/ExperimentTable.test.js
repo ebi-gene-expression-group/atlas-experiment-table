@@ -74,7 +74,6 @@ describe(`ExperimentTable`, () => {
   test(`should change page by clicking buttons`, () => {
     const wrapper = mount(<ExperimentTable {...props}/>)
     const currentPage = wrapper.state().currentPage
-    const randomPage = getRandomInt(0, data.length) + 1
     wrapper.setState({userNumber: 1, currentPage: 1})
     wrapper.update()
 
@@ -91,10 +90,6 @@ describe(`ExperimentTable`, () => {
     const currentNumberButton = wrapper.find(`.paginate_button.number.current`)
     expect(pageNumberButton).toHaveLength(data.length-1)
     expect(currentNumberButton).toHaveLength(1)
-
-    randomPage===currentPage && pageNumberButton.at(randomPage-2).simulate('click')
-    wrapper.update()
-    expect(wrapper.state().currentPage).toEqual(randomPage)
   })
 
   test(`should show/hide download based on props`, () => {

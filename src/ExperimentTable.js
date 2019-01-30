@@ -182,7 +182,11 @@ class ExperimentTable extends React.Component {
           <Table.TextHeaderCell key={`index`} flexBasis={60} flexShrink={0} flexGrow={0}>Index</Table.TextHeaderCell>
           {[
             this.renderTableHeader(tableHeader),
-            enableDownload && <Table.TextHeaderCell className={`downloadHeader`} key={`download`}><a href={`${host}experimentlist/${checkedArray.toString()}/download/zip?fileType=marker-genes&accessKey=`}>Download {checkedArray.length} entries</a></Table.TextHeaderCell>
+            enableDownload && <Table.TextHeaderCell className={`downloadHeader`} key={`download`}>
+              {checkedArray.length > 0 ?
+                <a href={`${host}experimentlist/${checkedArray.toString()}/download/zip?fileType=marker-genes&accessKey=`}>Download {checkedArray.length} entries</a>
+                : `Download`}
+            </Table.TextHeaderCell>
           ]}
         </Table.Head>
 

@@ -116,7 +116,7 @@ class ExperimentTable extends React.Component {
         <Table.Head>
           <Table.TextHeaderCell key={`index`} flexBasis={100} flexShrink={0} flexGrow={0}>Index</Table.TextHeaderCell>
           {[
-            <TableHeaderCells {...{tableHeader, searchedColumn, searchQuery, orderedColumn,  ordering}}
+            <TableHeaderCells key={`tableHeader`} {...{tableHeader, searchedColumn, searchQuery, orderedColumn, ordering}}
               onClick={(columnNumber) =>
                 this.setState({
                   orderedColumn: columnNumber,

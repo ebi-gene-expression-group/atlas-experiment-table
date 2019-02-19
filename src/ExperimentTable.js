@@ -2,6 +2,25 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'evergreen-ui'
 import _ from 'lodash'
+import styled from 'styled-components'
+
+const TableFooterDiv = styled.div`
+  &:before {
+    content: '';
+    width: 100%;
+    height: 1em;
+  }
+`
+
+const TableCellDiv = styled.div`
+  font-size: 13px;
+  font-family: Helvetica, Arial, FreeSans, "Liberation Sans", sans-serif;
+`
+
+const TableSearchHeaderCellDiv = styled.div`
+ display: ruby;
+`
+
 
 class ExperimentTable extends React.Component {
   constructor(props) {
@@ -14,7 +33,7 @@ class ExperimentTable extends React.Component {
       ordering: true,
       checkedArray: [],
       currentPage: 1,
-      userNumber: 10
+      selectedNumber: 10
     }
 
     this.sort = this.sort.bind(this)
@@ -36,28 +55,31 @@ class ExperimentTable extends React.Component {
         this.setState({
           orderedColumn: columnNumber,
           ordering: !this.state.ordering})}>
-      {[
-        `${headerText} `,
-        columnNumber===this.state.orderedColumn ?
-          this.state.ordering ?
-            <i key={`up${columnNumber}`} className={`icon icon-common icon-sort-up`}/> : <i key={`down${columnNumber}`} className={`icon icon-common icon-sort-down`}/>
-          : <i key={`updown${columnNumber}`} className={`icon icon-common icon-sort`}/>
-      ]}
+      <TableSearchHeaderCellDiv>
+        {[
+          `${headerText} `,
+          columnNumber===this.state.orderedColumn ?
+            this.state.ordering ?
+              <i key={`up${columnNumber}`} className={`icon icon-common icon-sort-up`}/> : <i key={`down${columnNumber}`} className={`icon icon-common icon-sort-down`}/>
+            : <i key={`updown${columnNumber}`} className={`icon icon-common icon-sort`}/>
+        ]}
+      </TableSearchHeaderCellDiv>
     </Table.TextHeaderCell>
+
   }
 
-  sort(profiles) {
+  sort(data) {
     const {ordering, orderedColumn} = this.state
     const propKey = this.props.tableHeader[orderedColumn].dataParam
-    const filteredElements = _.sortBy(profiles, propKey)
+    const filteredElements = _.sortBy(data, propKey)
     return ordering ? filteredElements :  filteredElements.reverse()
   }
 
   // Filter the profiles based on the name property.
-  filter(profiles, tableHeader){
+  filter(data, tableHeader){
     const searchQuery = this.state.searchQuery.trim()
-    return searchQuery.length === 0 ? profiles :
-      profiles.filter(profile => _.isArray(profile[tableHeader[this.state.searchedColumn].dataParam]) ?
+    return searchQuery.length === 0 ? data :
+      data.filter(profile => _.isArray(profile[tableHeader[this.state.searchedColumn].dataParam]) ?
         _.flattenDeep(profile[tableHeader[this.state.searchedColumn].dataParam]).some(item=>item.toLowerCase().includes(searchQuery.toLowerCase())) :
         profile[tableHeader[this.state.searchedColumn].dataParam].toString().toLowerCase().includes(searchQuery.toLowerCase())
       )
@@ -106,7 +128,7 @@ class ExperimentTable extends React.Component {
     return [
       <div key={`bottom-info`} className={`small-6 columns`}>
         <div className={`dataTables_info`}>{dataArray.length === 0 ? `There is no search results under this query`
-          : `Found ${dataArray.length} entries filtered from ${this.props.aaData.length} total entries.`} </div>
+          : `Found ${dataArray.length} entries filtered from ${this.props.data.length} total entries.`} </div>
       </div>,
       <div key={`bottom-button`} className={`small-6 columns`}>
         <ul className={`pagination`}  style={{"textAlign": `right`}}>
@@ -140,18 +162,19 @@ class ExperimentTable extends React.Component {
   }
 
   render() {
-    const {userSearch, userKingdom, checkedArray, userNumber, currentPage} = this.state
-    const {host, aaData, tableHeader, enableDownload, TableCellDiv} = this.props
-    const dataArray = userSearch ? this.sort(aaData).filter(data => data && Object.values(data).some(value => value.toString().toLowerCase().includes(userSearch.toLowerCase()))) :
-      this.filter(this.sort(aaData), tableHeader).filter(data=> userKingdom ? data.kingdom===userKingdom : true)
-    const currentPageData = userNumber ? dataArray.slice(userNumber*(currentPage-1), userNumber*currentPage) : dataArray
+    const {selectedSearch, selectedKingdom, checkedArray, selectedNumber, currentPage} = this.state
+    const {host, data, tableHeader, enableDownload} = this.props
+
+    const dataArray = selectedSearch ? this.sort(data).filter(data => data && Object.values(data).some(value => value.toString().toLowerCase().includes(selectedSearch.toLowerCase()))) :
+      this.filter(this.sort(data), tableHeader).filter(data => selectedKingdom ? data.kingdom === selectedKingdom : true)
+    const currentPageData = selectedNumber ? dataArray.slice(selectedNumber*(currentPage-1), selectedNumber*currentPage) : dataArray
 
     return [
       <div key={`tableHead`} className={`row expanded`}>
         <div className={`large-2 medium-4 small-8 columns`}>
           <label> Kingdom:
             <select defaultValue={``} className={`kingdom`}
-              onChange={event => this.setState({userKingdom: event.target.value})}>
+              onChange={event => this.setState({selectedKingdom: event.target.value})}>
               <option value={``} >All</option>
               <option value={`animals`}>Plants</option>
               <option value={`plants`}>Animals</option>
@@ -161,25 +184,25 @@ class ExperimentTable extends React.Component {
         </div>
         <div className={`large-2 medium-4 small-8 columns`}>
           <label>Entries per page:
-            <select defaultValue={10} onChange={this.setValue(`userNumber`)}>
+            <select defaultValue={10} onChange={this.setValue(`selectedNumber`)}>
               <option value={10}>10</option>
               <option value={25}>25</option>
               <option value={50}>50</option>
               <option value={100}>100</option>
-              <option value={aaData.length}>All</option>
+              <option value={data.length}>All</option>
             </select>
           </label>
         </div>
-        <div className={`small-8 columns`}>
+        <div className={`large-2 medium-4 small-8 columns`}>
           <label>Search all columns:
             <input type={`search`} placeholder={`Type here ...`}
-              onChange={this.setValue(`userSearch`)}/></label>
+              onChange={this.setValue(`selectedSearch`)}/></label>
         </div>
       </div>,
 
-      <Table border key={`table`}>
+      <Table border key={`table`} style={{display:`grid`}}>
         <Table.Head>
-          <Table.TextHeaderCell key={`index`} flexBasis={60} flexShrink={0} flexGrow={0}>Index</Table.TextHeaderCell>
+          <Table.TextHeaderCell key={`index`} flexBasis={100} flexShrink={0} flexGrow={0}>Index</Table.TextHeaderCell>
           {[
             this.renderTableHeader(tableHeader),
             enableDownload && <Table.TextHeaderCell className={`downloadHeader`} key={`download`}>
@@ -195,8 +218,8 @@ class ExperimentTable extends React.Component {
             return (
               <Table.Row height="auto" backgroundColor={index%2===0 ? `white`:`#F5F6F7`} paddingY={14} key={`row${index}`}>
 
-                <Table.Cell key={`index${index}`} flexBasis={60} flexShrink={0} flexGrow={0}>
-                  <TableCellDiv>{`${index + 1 + userNumber*(currentPage-1)} `}</TableCellDiv>
+                <Table.Cell flexBasis={100} flexShrink={0} flexGrow={0}>
+                  <TableCellDiv>{`${index + 1 + selectedNumber*(currentPage-1)} `}</TableCellDiv>
                 </Table.Cell>
 
                 {[
@@ -206,12 +229,12 @@ class ExperimentTable extends React.Component {
                       : data[header.dataParam]
                     return <Table.Cell key={`${cellItem}`} flexBasis={header.width} flexShrink={0} flexGrow={0}>
                       <TableCellDiv>
-                        {header.link ? <a href={`${host}/${header.resource}/${data[header.link]}/${header.endpoint}`}>{cellItem}</a> : cellItem}
+                        {header.link ? <a href={`${host}${header.resource}/${data[header.link]}/${header.endpoint}`}>{cellItem}</a> : cellItem}
                       </TableCellDiv>
                     </Table.Cell>
                   }),
 
-                  enableDownload && <Table.Cell key={`checkbox`} flexBasis={60} flexShrink={0} flexGrow={0}>
+                  enableDownload && <Table.Cell key={`checkbox`} flexBasis={100} flexShrink={0} flexGrow={0}>
                     <TableCellDiv>
                       <input type={`checkbox`} className={`checkbox`} checked={checkedArray.includes(data.experimentAccession)}
                         onChange={()=>this.handleCheckbox(data.experimentAccession)} />
@@ -224,22 +247,20 @@ class ExperimentTable extends React.Component {
           }
         </Table.Body>
       </Table>,
-      <br  key={`space`}/>,
-      <div key={`tableFoot`} className={`row`}>
+      <TableFooterDiv key={`tableFoot`} className={`row expanded`}>
         {this.renderTableBottomInfo(dataArray)}
-      </div>
+      </TableFooterDiv>
 
     ]
   }
 }
 
 ExperimentTable.propTypes = {
-  aaData: PropTypes.array,
+  data: PropTypes.array,
   host: PropTypes.string.isRequired,
   resource: PropTypes.string.isRequired,
   tableHeader: PropTypes.array.isRequired,
   enableDownload: PropTypes.bool.isRequired,
-  TableCellDiv: PropTypes.object.isRequired
 }
 
 export default ExperimentTable

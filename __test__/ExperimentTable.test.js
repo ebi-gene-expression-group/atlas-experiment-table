@@ -1,10 +1,11 @@
 import React from 'react'
-import renderer from 'react-test-renderer'
 import Enzyme from 'enzyme'
 import {shallow, mount} from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import {getRandomInt, TableCellDiv, data, tableHeader} from './TestUtils'
 import ExperimentTable from '../src/ExperimentTable'
+import TableFooter from '../src/TableFooter'
+import TableHeaderCells from '../src/TableHeaderCells'
 import { Table } from 'evergreen-ui'
 import _ from "lodash"
 
@@ -12,7 +13,7 @@ Enzyme.configure({ adapter: new Adapter() })
 
 describe(`ExperimentTable`, () => {
   const props = {
-    aaData: data,
+    data: data,
     tableHeader: tableHeader,
     host: `fool`,
     resource: `bool`,
@@ -28,7 +29,8 @@ describe(`ExperimentTable`, () => {
     expect(wrapper.find(Table.Head)).toHaveLength(1)
     expect(wrapper.find(Table.Body)).toHaveLength(1)
 
-    expect(wrapper.find(`.small-6.columns`)).toHaveLength(2)
+    expect(wrapper.find(TableFooter)).toHaveLength(1)
+    expect(wrapper.find(TableHeaderCells)).toHaveLength(1)
   })
 
 
@@ -55,7 +57,7 @@ describe(`ExperimentTable`, () => {
     const kingdomSearch = wrapper.find(`.kingdom`).at(0)
     kingdomSearch.simulate(`change`, event)
 
-    expect(wrapper.state(`userKingdom`)).toEqual(`animals`)
+    expect(wrapper.state(`selectedKingdom`)).toEqual(`animals`)
     expect(wrapper.find(Table.Row).length).toBeLessThanOrEqual(data.length)
   })
 
@@ -74,7 +76,7 @@ describe(`ExperimentTable`, () => {
   test(`should change page by clicking buttons`, () => {
     const wrapper = mount(<ExperimentTable {...props}/>)
     const currentPage = wrapper.state().currentPage
-    wrapper.setState({userNumber: 1, currentPage: 1})
+    wrapper.setState({selectedNumber: 1, currentPage: 1})
     wrapper.update()
 
     const nextButton = wrapper.find('a.next')

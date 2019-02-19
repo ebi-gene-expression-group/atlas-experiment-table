@@ -10,8 +10,8 @@
 </head>
 
 <body>
-<div id="wrapper" class="row">
-    <div id="content" class="small-12 columns">
+<div id="wrapper" class="row expanded">
+    <div id="content" class="small-12 columns" >
         <div id="target">
         </div>
     </div>
@@ -29,12 +29,12 @@
     tableHeader:
         [
           //{type: `plain`, title: `index`, width: 60, dataParam: null, link: null},
-          {type: `sort`, title: `Loaded date`, width: 140, dataParam: `lastUpdate`},
-          {type: `search`, title: `species`, width: 200, dataParam: `species`},
-          {type: `search`, title: `experiment description`, width: 360, dataParam: `experimentDescription`,
+          {type: `sort`, title: `Loaded date`, width: 240, dataParam: `lastUpdate`},
+          {type: `search`, title: `species`, width: 260, dataParam: `species`},
+          {type: `search`, title: `experiment description`, width: 460, dataParam: `experimentDescription`,
             link: `experimentAccession`, resource: `experiments`, endpoint: `Results`},
           {type: `search`, title: `experiment factors`, width: 260, dataParam: `experimentalFactors`},
-          {type: `sort`, title: `Number of assays`, width: 160, dataParam: `numberOfAssays`,
+          {type: `sort`, title: `Number of assays`, width: 260, dataParam: `numberOfAssays`,
             link: `experimentAccession`, resource: `experiments`, endpoint: `Experiment%20Design`},
           //{type: `plain`, title: `Download`, width: null,  dataParam: null}
         ],

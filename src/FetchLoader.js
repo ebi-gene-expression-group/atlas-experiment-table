@@ -47,7 +47,7 @@ class FetchLoader extends React.Component {
             </div>
           </div> :
           data.aaData && data.aaData.length > 0 ?
-            <ExperimentTable {...data} {...this.props}/> :
+            <ExperimentTable data={data.aaData} {...this.props}/> :
             <div className={`row expanded`}>
               <div className={`small-12 columns`}>
                 <h5>{noResultsMessageFormatter(data)}</h5>

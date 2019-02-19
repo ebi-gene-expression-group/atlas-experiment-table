@@ -27,9 +27,9 @@ describe(`TableHeaderCells`, () => {
     expect(wrapper.find(`.icon.icon-common.icon-sort-up`)).toHaveLength(1)
     expect(wrapper.find(`.icon.icon-common.icon-sort-down`)).toHaveLength(0)
 
-    props.tableHeader[randomColumn].type=`search`
+    props.tableHeader[1].type=`search`
     const wrapper2 = shallow(<TableHeaderCells {...props}/>)
-    expect(wrapper2.find(Table.SearchHeaderCell)).toHaveLength(2)
+    expect(wrapper2.find(Table.SearchHeaderCell)).toHaveLength(1)
   })
 
 })

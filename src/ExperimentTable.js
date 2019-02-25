@@ -75,48 +75,48 @@ class ExperimentTable extends React.Component {
 
   render() {
     const {selectedSearch, selectedKingdom, checkedArray, selectedNumber, currentPage, searchedColumn, searchQuery, orderedColumn, ordering} = this.state
-    const {host, data, tableHeader, enableDownload} = this.props
+    const {host, data, tableHeader, enableDownload, enableIndex} = this.props
 
     const dataArray = selectedSearch ? this.sort(data).filter(data => data && Object.values(data).some(value => value.toString().toLowerCase().includes(selectedSearch.toLowerCase()))) :
       this.filter(this.sort(data), tableHeader).filter(data => selectedKingdom ? data.kingdom === selectedKingdom : true)
     const currentPageData = selectedNumber ? dataArray.slice(selectedNumber*(currentPage-1), selectedNumber*currentPage) : dataArray
 
-    return [
-      <div key={`tableHead`} className={`row expanded`}>
-        <div className={`large-2 medium-4 small-8 columns`}>
-          <label> Kingdom:
-            <select defaultValue={``} className={`kingdom`}
-              onChange={event => this.setState({selectedKingdom: event.target.value})}>
-              <option value={``} >All</option>
-              <option value={`animals`}>Plants</option>
-              <option value={`plants`}>Animals</option>
-              <option value={`fungi`}>Fungi</option>
-            </select>
-          </label>
+    return (
+      <div>
+        <div className={`row expanded`}>
+          <div className={`large-2 medium-4 small-8 columns`}>
+            <label> Kingdom:
+              <select defaultValue={``} className={`kingdom`}
+                onChange={event => this.setState({selectedKingdom: event.target.value})}>
+                <option value={``} >All</option>
+                <option value={`animals`}>Plants</option>
+                <option value={`plants`}>Animals</option>
+                <option value={`fungi`}>Fungi</option>
+              </select>
+            </label>
+          </div>
+          <div className={`large-2 medium-4 small-8 columns`}>
+            <label>Entries per page:
+              <select defaultValue={10} onChange={this.setValue(`selectedNumber`)}>
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+                <option value={data.length}>All</option>
+              </select>
+            </label>
+          </div>
+          <div className={`large-2 medium-4 small-8 columns`}>
+            <label>Search all columns:
+              <input type={`search`} placeholder={`Type here ...`}
+                onChange={this.setValue(`selectedSearch`)}/></label>
+          </div>
         </div>
-        <div className={`large-2 medium-4 small-8 columns`}>
-          <label>Entries per page:
-            <select defaultValue={10} onChange={this.setValue(`selectedNumber`)}>
-              <option value={10}>10</option>
-              <option value={25}>25</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-              <option value={data.length}>All</option>
-            </select>
-          </label>
-        </div>
-        <div className={`large-2 medium-4 small-8 columns`}>
-          <label>Search all columns:
-            <input type={`search`} placeholder={`Type here ...`}
-              onChange={this.setValue(`selectedSearch`)}/></label>
-        </div>
-      </div>,
 
-      <Table border key={`table`} style={{display:`grid`}}>
-        <Table.Head>
-          <Table.TextHeaderCell key={`index`} flexBasis={100} flexShrink={0} flexGrow={0}>Index</Table.TextHeaderCell>
-          {[
-            <TableHeaderCells key={`tableHeader`} {...{tableHeader, searchedColumn, searchQuery, orderedColumn, ordering}}
+        <Table border style={{display:`grid`}}>
+          <Table.Head>
+            {enableIndex &&<Table.TextHeaderCell key={`index`} flexBasis={100} flexShrink={100} flexGrow={100}>Index</Table.TextHeaderCell>}
+            <TableHeaderCells {...{tableHeader, searchedColumn, searchQuery, orderedColumn, ordering}}
               onClick={(columnNumber) =>
                 this.setState({
                   orderedColumn: columnNumber,
@@ -126,54 +126,55 @@ class ExperimentTable extends React.Component {
                   searchQuery: value,
                   searchedColumn: columnNumber
                 })}
-            />,
-            enableDownload && <Table.TextHeaderCell className={`downloadHeader`} key={`download`}>
-              {checkedArray.length > 0 ?
-                <a href={`${host}experimentlist/${checkedArray.toString()}/download/zip?fileType=marker-genes&accessKey=`}>Download {checkedArray.length} entries</a>
-                : `Download`}
-            </Table.TextHeaderCell>
-          ]}
-        </Table.Head>
+            />
+            {
+              enableDownload && <Table.TextHeaderCell className={`downloadHeader`} flexBasis={100} flexShrink={100} flexGrow={100}>
+                {checkedArray.length > 0 ?
+                  <a href={`${host}experimentlist/${checkedArray.toString()}/download/zip?fileType=marker-genes&accessKey=`}>Download {checkedArray.length} entries</a>
+                  : `Download`}
+              </Table.TextHeaderCell>
+            }
+          </Table.Head>
 
-        <Table.Body>
-          {currentPageData.map((data, index) => {
-            return (
-              <Table.Row height="auto" backgroundColor={index%2===0 ? `white`:`#F5F6F7`} paddingY={14} key={`row${index}`}>
+          <Table.Body>
+            {currentPageData.map((data, index) => {
+              return (
+                <Table.Row height="auto" backgroundColor={index%2===0 ? `white`:`#F5F6F7`} paddingY={14} key={`row${index}`}>
 
-                <Table.Cell flexBasis={100} flexShrink={0} flexGrow={0}>
-                  <TableCellDiv>{`${index + 1 + selectedNumber*(currentPage-1)} `}</TableCellDiv>
-                </Table.Cell>
+                  {[
+                    enableIndex && <Table.Cell key={index} flexBasis={100} flexShrink={100} flexGrow={100}>
+                      <TableCellDiv>{`${index + 1 + selectedNumber*(currentPage-1)} `}</TableCellDiv>
+                    </Table.Cell>,
 
-                {[
-                  tableHeader.map((header, index) => {
-                    const cellItem = _.isArray(data[header.dataParam]) ?
-                      <ul key={`cell${index}`}>{data[header.dataParam].map(factor => <li key={factor}>{factor}</li>)}</ul>
-                      : data[header.dataParam]
-                    return <Table.Cell key={`${cellItem}`} flexBasis={header.width} flexShrink={0} flexGrow={0}>
+                    tableHeader.map((header, index) => {
+                      const cellItem = _.isArray(data[header.dataParam]) ?
+                        <ul key={`cell${index}`}>{data[header.dataParam].map(factor => <li key={factor}>{factor}</li>)}</ul>
+                        : data[header.dataParam]
+                      return <Table.Cell key={`${cellItem}`} flexBasis={header.width} flexShrink={100} flexGrow={100}>
+                        <TableCellDiv>
+                          {header.link ? <a href={`${host}${header.resource}/${data[header.link]}/${header.endpoint}`}>{cellItem}</a> : cellItem}
+                        </TableCellDiv>
+                      </Table.Cell>
+                    }),
+
+                    enableDownload && <Table.Cell key={`checkbox`} flexBasis={100} flexShrink={100} flexGrow={100}>
                       <TableCellDiv>
-                        {header.link ? <a href={`${host}${header.resource}/${data[header.link]}/${header.endpoint}`}>{cellItem}</a> : cellItem}
+                        <input type={`checkbox`} className={`checkbox`} checked={checkedArray.includes(data.experimentAccession)}
+                          onChange={()=>this.handleCheckbox(data.experimentAccession)} />
                       </TableCellDiv>
                     </Table.Cell>
-                  }),
+                  ]}
 
-                  enableDownload && <Table.Cell key={`checkbox`} flexBasis={100} flexShrink={0} flexGrow={0}>
-                    <TableCellDiv>
-                      <input type={`checkbox`} className={`checkbox`} checked={checkedArray.includes(data.experimentAccession)}
-                        onChange={()=>this.handleCheckbox(data.experimentAccession)} />
-                    </TableCellDiv>
-                  </Table.Cell>
-                ]}
-
-              </Table.Row>)
-          })
-          }
-        </Table.Body>
-      </Table>,
-      <TableFooterDiv key={`tableFooter`} className={`row expanded`}>
-        <TableFooter {...{dataArray, data, currentPage, selectedNumber}} onChange={i => this.setState({currentPage: i})}/>
-      </TableFooterDiv>
-
-    ]
+                </Table.Row>)
+            })
+            }
+          </Table.Body>
+        </Table>
+        <TableFooterDiv className={`row expanded`}>
+          <TableFooter {...{dataArray, data, currentPage, selectedNumber}} onChange={i => this.setState({currentPage: i})}/>
+        </TableFooterDiv>
+      </div>
+    )
   }
 }
 
@@ -183,6 +184,7 @@ ExperimentTable.propTypes = {
   resource: PropTypes.string.isRequired,
   tableHeader: PropTypes.array.isRequired,
   enableDownload: PropTypes.bool.isRequired,
+  enableIndex: PropTypes.bool.isRequired,
 }
 
 export default ExperimentTable

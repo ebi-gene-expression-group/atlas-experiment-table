@@ -12,7 +12,7 @@ function renderTableSortHeaderCell (columnNumber, headerText, width, orderedColu
   return <Table.TextHeaderCell
     key={`header${columnNumber}`}
     className={`header${columnNumber}`}
-    flexBasis={width} flexShrink={0} flexGrow={0}
+    flexBasis={width} flexShrink={100} flexGrow={100}
     onClick={() => onClick(columnNumber)}>
     <TableSearchHeaderCellDiv>
       {[
@@ -31,7 +31,7 @@ function renderTableSearchHeaderCell(columnNumber, headerText, width, searchedCo
   return <Table.SearchHeaderCell
     key={`searchheader${columnNumber}`}
     className={`searchheader${columnNumber}`}
-    flexBasis={width} flexShrink={0} flexGrow={0}
+    flexBasis={width} flexShrink={100} flexGrow={100}
     onChange={value => onChange(value, columnNumber)}
     value={columnNumber===searchedColumn ? searchQuery : ``}
     placeholder = {`Search by ${headerText} ...`}
@@ -42,7 +42,7 @@ const TableHeaderCells = ({tableHeader, searchedColumn, searchQuery, onClick, on
   return tableHeader.map((header, index) => {
     switch(header.type) {
     case `plain`:
-      return <Table.TextHeaderCell key={header.title} flexBasis={header.width} flexShrink={0} flexGrow={0}>{header.title}</Table.TextHeaderCell>
+      return <Table.TextHeaderCell key={header.title} flexBasis={header.width} flexShrink={100} flexGrow={100}>{header.title}</Table.TextHeaderCell>
     case `sort`:
       return renderTableSortHeaderCell(index, header.title, header.width, orderedColumn, ordering, onClick)
     case `search`:

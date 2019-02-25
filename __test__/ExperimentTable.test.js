@@ -18,6 +18,7 @@ describe(`ExperimentTable`, () => {
     host: `fool`,
     resource: `bool`,
     enableDownload: true,
+    enableIndex: true,
     TableCellDiv: TableCellDiv
   }
 

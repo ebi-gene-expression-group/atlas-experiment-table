@@ -15,13 +15,13 @@ function renderTableSortHeaderCell (columnNumber, headerText, width, orderedColu
     flexBasis={width} flexShrink={100} flexGrow={100}
     onClick={() => onClick(columnNumber)}>
     <TableSearchHeaderCellDiv>
-      {[
-        `${headerText} `,
-        columnNumber===orderedColumn ?
-          ordering ?
-            <i key={`up${columnNumber}`} className={`icon icon-common icon-sort-up`}/> : <i key={`down${columnNumber}`} className={`icon icon-common icon-sort-down`}/>
-          : <i key={`updown${columnNumber}`} className={`icon icon-common icon-sort`}/>
-      ]}
+      {headerText}
+      { columnNumber===orderedColumn ?
+        ordering ?
+          <i className={`icon icon-common icon-sort-up`} style={{paddingLeft: `1em`}}/>
+          : <i className={`icon icon-common icon-sort-down`} style={{paddingLeft: `1em`}}/>
+        : <i className={`icon icon-common icon-sort`} style={{paddingLeft: `1em`}}/>
+      }
     </TableSearchHeaderCellDiv>
   </Table.TextHeaderCell>
 

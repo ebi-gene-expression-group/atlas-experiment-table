@@ -10,7 +10,7 @@ const TableFooter = ({dataArray, currentPage, selectedNumber, onChange, data}) =
   return [
     <div key={`bottom-info`} className={`small-6 columns`}>
       <div className={`dataTables_info`}>{dataArray.length === 0 ? `There is no search results under this query`
-        : `Found ${dataArray.length} entries filtered from ${data.length} total entries.`} </div>
+        : `Showing ${dataArray.length} out of ${data.length} experiments.`} </div>
     </div>,
     <div key={`bottom-button`} className={`small-6 columns`}>
       <ul className={`pagination`}  style={{"textAlign": `right`}}>

@@ -38,7 +38,7 @@ const TableHeaderCells = ({tableHeader, searchedColumn, searchQuery, onClick, on
     case `plain`:
       return <Table.TextHeaderCell key={header.title} flexBasis={header.width} flexShrink={100} flexGrow={100}>{header.title}</Table.TextHeaderCell>
     case `sort`:
-      return <RenderTableSortHeaderCell  key={`sortheader${index}`}columnNumber={index} headerText={header.title} width={header.width} {...{orderedColumn, ordering, onClick}}/>
+      return <RenderTableSortHeaderCell  key={`sortheader${index}`} columnNumber={index} headerText={header.title} width={header.width} {...{orderedColumn, ordering, onClick}}/>
     case `search`:
       return <RenderTableSearchHeaderCell key={`searchheader${index}`} columnNumber={index} headerText={header.title} width={header.width} {...{searchedColumn, searchQuery, onChange}}/>
     default:

@@ -1,4 +1,3 @@
-import _ from "lodash"
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'evergreen-ui'
@@ -8,9 +7,8 @@ const TableSearchHeaderCellDiv = styled.div`
  display: ruby;
 `
 
-function renderTableSortHeaderCell (columnNumber, headerText, width, orderedColumn, ordering, onClick) {
-  return <Table.TextHeaderCell
-    key={`header${columnNumber}`}
+const RenderTableSortHeaderCell = ({columnNumber, headerText, width, orderedColumn, ordering, onClick}) =>
+  <Table.TextHeaderCell
     className={`header${columnNumber}`}
     flexBasis={width} flexShrink={100} flexGrow={100}
     onClick={() => onClick(columnNumber)}>
@@ -25,18 +23,14 @@ function renderTableSortHeaderCell (columnNumber, headerText, width, orderedColu
     </TableSearchHeaderCellDiv>
   </Table.TextHeaderCell>
 
-}
-
-function renderTableSearchHeaderCell(columnNumber, headerText, width, searchedColumn, searchQuery, onChange){
-  return <Table.SearchHeaderCell
-    key={`searchheader${columnNumber}`}
+const RenderTableSearchHeaderCell = ({columnNumber, headerText, width, searchedColumn, searchQuery, onChange}) =>
+  <Table.SearchHeaderCell
     className={`searchheader${columnNumber}`}
     flexBasis={width} flexShrink={100} flexGrow={100}
     onChange={value => onChange(value, columnNumber)}
     value={columnNumber===searchedColumn ? searchQuery : ``}
     placeholder = {`Search by ${headerText} ...`}
   />
-}
 
 const TableHeaderCells = ({tableHeader, searchedColumn, searchQuery, onClick, onChange, orderedColumn, ordering}) => {
   return tableHeader.map((header, index) => {
@@ -44,9 +38,9 @@ const TableHeaderCells = ({tableHeader, searchedColumn, searchQuery, onClick, on
     case `plain`:
       return <Table.TextHeaderCell key={header.title} flexBasis={header.width} flexShrink={100} flexGrow={100}>{header.title}</Table.TextHeaderCell>
     case `sort`:
-      return renderTableSortHeaderCell(index, header.title, header.width, orderedColumn, ordering, onClick)
+      return <RenderTableSortHeaderCell  key={`sortheader${index}`}columnNumber={index} headerText={header.title} width={header.width} {...{orderedColumn, ordering, onClick}}/>
     case `search`:
-      return renderTableSearchHeaderCell(index, header.title, header.width, searchedColumn, searchQuery, onChange)
+      return <RenderTableSearchHeaderCell key={`searchheader${index}`} columnNumber={index} headerText={header.title} width={header.width} {...{searchedColumn, searchQuery, onChange}}/>
     default:
       return <Table.TextHeaderCell key={header.title}>{header.title}</Table.TextHeaderCell>
     }}
@@ -61,7 +55,25 @@ TableHeaderCells.propTypes = {
   orderedColumn: PropTypes.number.isRequired,
   ordering: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired
+}
+
+RenderTableSearchHeaderCell.propTypes = {
+  columnNumber: PropTypes.number.isRequired,
+  headerText: PropTypes.string.isRequired,
+  width: PropTypes.number.isRequired,
+  searchedColumn: PropTypes.number.isRequired,
+  searchQuery: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired
+}
+
+RenderTableSortHeaderCell.propTypes = {
+  columnNumber: PropTypes.number.isRequired,
+  headerText: PropTypes.string.isRequired,
+  width: PropTypes.number.isRequired,
+  orderedColumn: PropTypes.number.isRequired,
+  ordering: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired
 }
 
 export default TableHeaderCells

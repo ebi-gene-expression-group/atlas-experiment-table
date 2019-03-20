@@ -7,7 +7,7 @@ const TableSearchHeaderCellDiv = styled.div`
  display: ruby;
 `
 
-const RenderTableSortHeaderCell = ({columnNumber, headerText, width, orderedColumn, ordering, onClick}) =>
+const TableSortHeaderCell = ({columnNumber, headerText, width, orderedColumn, ordering, onClick}) =>
   <Table.TextHeaderCell
     className={`header${columnNumber}`}
     flexBasis={width} flexShrink={100} flexGrow={100}
@@ -23,7 +23,7 @@ const RenderTableSortHeaderCell = ({columnNumber, headerText, width, orderedColu
     </TableSearchHeaderCellDiv>
   </Table.TextHeaderCell>
 
-const RenderTableSearchHeaderCell = ({columnNumber, headerText, width, searchedColumn, searchQuery, onChange}) =>
+const TableSearchHeaderCell = ({columnNumber, headerText, width, searchedColumn, searchQuery, onChange}) =>
   <Table.SearchHeaderCell
     className={`searchheader${columnNumber}`}
     flexBasis={width} flexShrink={100} flexGrow={100}
@@ -38,9 +38,9 @@ const TableHeaderCells = ({tableHeader, searchedColumn, searchQuery, onClick, on
     case `plain`:
       return <Table.TextHeaderCell key={header.title} flexBasis={header.width} flexShrink={100} flexGrow={100}>{header.title}</Table.TextHeaderCell>
     case `sort`:
-      return <RenderTableSortHeaderCell  key={`sortheader${index}`} columnNumber={index} headerText={header.title} width={header.width} {...{orderedColumn, ordering, onClick}}/>
+      return <TableSortHeaderCell  key={`sortheader${index}`} columnNumber={index} headerText={header.title} width={header.width} {...{orderedColumn, ordering, onClick}}/>
     case `search`:
-      return <RenderTableSearchHeaderCell key={`searchheader${index}`} columnNumber={index} headerText={header.title} width={header.width} {...{searchedColumn, searchQuery, onChange}}/>
+      return <TableSearchHeaderCell key={`searchheader${index}`} columnNumber={index} headerText={header.title} width={header.width} {...{searchedColumn, searchQuery, onChange}}/>
     default:
       return <Table.TextHeaderCell key={header.title}>{header.title}</Table.TextHeaderCell>
     }}
@@ -58,7 +58,7 @@ TableHeaderCells.propTypes = {
   onClick: PropTypes.func.isRequired
 }
 
-RenderTableSearchHeaderCell.propTypes = {
+TableSearchHeaderCell.propTypes = {
   columnNumber: PropTypes.number.isRequired,
   headerText: PropTypes.string.isRequired,
   width: PropTypes.number.isRequired,
@@ -67,7 +67,7 @@ RenderTableSearchHeaderCell.propTypes = {
   onChange: PropTypes.func.isRequired
 }
 
-RenderTableSortHeaderCell.propTypes = {
+TableSortHeaderCell.propTypes = {
   columnNumber: PropTypes.number.isRequired,
   headerText: PropTypes.string.isRequired,
   width: PropTypes.number.isRequired,

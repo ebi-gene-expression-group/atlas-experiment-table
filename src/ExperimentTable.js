@@ -5,7 +5,7 @@ import _ from 'lodash'
 import styled from 'styled-components'
 
 import TableFooter from './TableFooter'
-import TableHeaderCells from './TableHeaderCells'
+import tableHeaderCells from './tableHeaderCells'
 
 const TableFooterDiv = styled.div`
   &:before {
@@ -89,8 +89,8 @@ class ExperimentTable extends React.Component {
               <select defaultValue={``} className={`kingdom`}
                 onChange={event => this.setState({selectedKingdom: event.target.value})}>
                 <option value={``} >All</option>
-                <option value={`animals`}>Plants</option>
-                <option value={`plants`}>Animals</option>
+                <option value={`plants`}>Plants</option>
+                <option value={`animals`}>Animals</option>
                 <option value={`fungi`}>Fungi</option>
               </select>
             </label>
@@ -115,18 +115,18 @@ class ExperimentTable extends React.Component {
 
         <Table border style={{display:`grid`}}>
           <Table.Head>
-            {enableIndex &&<Table.TextHeaderCell key={`index`} flexBasis={100} flexShrink={100} flexGrow={100}>Index</Table.TextHeaderCell>}
-            <TableHeaderCells {...{tableHeader, searchedColumn, searchQuery, orderedColumn, ordering}}
-              onClick={(columnNumber) =>
+            {enableIndex && <Table.TextHeaderCell key={`index`} flexBasis={100} flexShrink={100} flexGrow={100}>Index</Table.TextHeaderCell>}
+            {tableHeaderCells(tableHeader, searchedColumn, searchQuery, orderedColumn, ordering,
+              (columnNumber) =>
                 this.setState({
                   orderedColumn: columnNumber,
-                  ordering: !this.state.ordering})}
-              onChange={(value, columnNumber) =>
+                  ordering: !this.state.ordering}),
+              (value, columnNumber) =>
                 this.setState({
                   searchQuery: value,
                   searchedColumn: columnNumber
-                })}
-            />
+                })
+            )}
             {
               enableDownload && <Table.TextHeaderCell className={`downloadHeader`} flexBasis={100} flexShrink={100} flexGrow={100}>
                 {

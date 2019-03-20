@@ -5,7 +5,6 @@ import Adapter from 'enzyme-adapter-react-16'
 import {getRandomInt, TableCellDiv, data, tableHeader} from './TestUtils'
 import ExperimentTable from '../src/ExperimentTable'
 import TableFooter from '../src/TableFooter'
-import TableHeaderCells from '../src/TableHeaderCells'
 import { Table } from 'evergreen-ui'
 import _ from "lodash"
 
@@ -31,7 +30,6 @@ describe(`ExperimentTable`, () => {
     expect(wrapper.find(Table.Body)).toHaveLength(1)
 
     expect(wrapper.find(TableFooter)).toHaveLength(1)
-    expect(wrapper.find(TableHeaderCells)).toHaveLength(1)
   })
 
 

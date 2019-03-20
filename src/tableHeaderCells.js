@@ -32,7 +32,7 @@ const TableSearchHeaderCell = ({columnNumber, headerText, width, searchedColumn,
     placeholder = {`Search by ${headerText} ...`}
   />
 
-const TableHeaderCells = ({tableHeader, searchedColumn, searchQuery, onClick, onChange, orderedColumn, ordering}) => {
+const tableHeaderCells = (tableHeader, searchedColumn, searchQuery, orderedColumn, ordering, onClick, onChange ) => {
   return tableHeader.map((header, index) => {
     switch(header.type) {
     case `plain`:
@@ -45,17 +45,6 @@ const TableHeaderCells = ({tableHeader, searchedColumn, searchQuery, onClick, on
       return <Table.TextHeaderCell key={header.title}>{header.title}</Table.TextHeaderCell>
     }}
   )
-}
-
-
-TableHeaderCells.propTypes = {
-  tableHeader: PropTypes.array.isRequired,
-  searchedColumn: PropTypes.number.isRequired,
-  searchQuery: PropTypes.string.isRequired,
-  orderedColumn: PropTypes.number.isRequired,
-  ordering: PropTypes.bool.isRequired,
-  onChange: PropTypes.func.isRequired,
-  onClick: PropTypes.func.isRequired
 }
 
 TableSearchHeaderCell.propTypes = {
@@ -76,4 +65,4 @@ TableSortHeaderCell.propTypes = {
   onClick: PropTypes.func.isRequired
 }
 
-export default TableHeaderCells
+export default tableHeaderCells

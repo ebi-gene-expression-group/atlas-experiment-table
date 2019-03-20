@@ -12,7 +12,7 @@ Enzyme.configure({ adapter: new Adapter() })
 
 describe(`ExperimentTable`, () => {
   const props = {
-    data: data,
+    aaData: data,
     tableHeader: tableHeader,
     host: `fool`,
     resource: `bool`,

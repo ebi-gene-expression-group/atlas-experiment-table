@@ -29,6 +29,7 @@
     "url": "https://github.com/ebi-gene-expression-group/scxa-experiment-table"
   },
   "dependencies": {
+    "atlas-react-fetch-loader": "^1.0.0",
     "evergreen-ui": "^4.9.0",
     "lodash": "^4.17.11",
     "prop-types": "^15.6.2",

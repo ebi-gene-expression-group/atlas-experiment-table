@@ -1,3 +1,4 @@
-import FetchLoader from './FetchLoader.js'
+import withFetchLoader from 'atlas-react-fetch-loader'
+import ExperimentTable from './ExperimentTable'
 
-export default FetchLoader
+export default withFetchLoader(ExperimentTable)

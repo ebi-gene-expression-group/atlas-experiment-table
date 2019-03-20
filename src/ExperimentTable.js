@@ -75,10 +75,10 @@ class ExperimentTable extends React.Component {
 
   render() {
     const {selectedSearch, selectedKingdom, checkedArray, selectedNumber, currentPage, searchedColumn, searchQuery, orderedColumn, ordering} = this.state
-    const {host, data, tableHeader, enableDownload, enableIndex} = this.props
+    const {host, aaData, tableHeader, enableDownload, enableIndex} = this.props
 
-    const dataArray = selectedSearch ? this.sort(data).filter(data => data && Object.values(data).some(value => value.toString().toLowerCase().includes(selectedSearch.toLowerCase()))) :
-      this.filter(this.sort(data), tableHeader).filter(data => selectedKingdom ? data.kingdom === selectedKingdom : true)
+    const dataArray = selectedSearch ? this.sort(aaData).filter(data => data && Object.values(data).some(value => value.toString().toLowerCase().includes(selectedSearch.toLowerCase()))) :
+      this.filter(this.sort(aaData), tableHeader).filter(data => selectedKingdom ? data.kingdom === selectedKingdom : true)
     const currentPageData = selectedNumber ? dataArray.slice(selectedNumber*(currentPage-1), selectedNumber*currentPage) : dataArray
 
     return (
@@ -102,7 +102,7 @@ class ExperimentTable extends React.Component {
                 <option value={25}>25</option>
                 <option value={50}>50</option>
                 <option value={100}>100</option>
-                <option value={data.length}>All</option>
+                <option value={aaData.length}>All</option>
               </select>
             </label>
           </div>
@@ -174,7 +174,7 @@ class ExperimentTable extends React.Component {
           </Table.Body>
         </Table>
         <TableFooterDiv className={`row expanded`}>
-          <TableFooter {...{dataArray, data, currentPage, selectedNumber}} onChange={i => this.setState({currentPage: i})}/>
+          <TableFooter {...{dataArray, currentPage, selectedNumber}} data={aaData} onChange={i => this.setState({currentPage: i})}/>
         </TableFooterDiv>
       </div>
     )
@@ -182,7 +182,7 @@ class ExperimentTable extends React.Component {
 }
 
 ExperimentTable.propTypes = {
-  data: PropTypes.array,
+  aaData: PropTypes.array,
   host: PropTypes.string.isRequired,
   resource: PropTypes.string.isRequired,
   tableHeader: PropTypes.array.isRequired,

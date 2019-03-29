@@ -1,26 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'evergreen-ui'
-import styled from 'styled-components'
-
-const TableSearchHeaderCellDiv = styled.div`
- display: ruby;
-`
 
 const TableSortHeaderCell = ({columnNumber, headerText, width, orderedColumn, ordering, onClick}) =>
   <Table.TextHeaderCell
     className={`header${columnNumber}`}
     flexBasis={width} flexShrink={100} flexGrow={100}
     onClick={() => onClick(columnNumber)}>
-    <TableSearchHeaderCellDiv>
+    <div style={{display: `ruby`}}>
       {headerText}
       { columnNumber===orderedColumn ?
         ordering ?
-          <i className={`icon icon-common icon-sort-up`} style={{paddingLeft: `1em`}}/>
-          : <i className={`icon icon-common icon-sort-down`} style={{paddingLeft: `1em`}}/>
-        : <i className={`icon icon-common icon-sort`} style={{paddingLeft: `1em`}}/>
+          <i className={`icon icon-common icon-sort-up`} style={{paddingLeft: `1em`}}/> :
+          <i className={`icon icon-common icon-sort-down`} style={{paddingLeft: `1em`}}/> :
+        <i className={`icon icon-common icon-sort`} style={{paddingLeft: `1em`}}/>
       }
-    </TableSearchHeaderCellDiv>
+    </div>
   </Table.TextHeaderCell>
 
 const TableSearchHeaderCell = ({columnNumber, headerText, width, searchedColumn, searchQuery, onChange}) =>

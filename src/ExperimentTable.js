@@ -2,23 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'evergreen-ui'
 import _ from 'lodash'
-import styled from 'styled-components'
 
 import TableFooter from './TableFooter'
 import tableHeaderCells from './tableHeaderCells'
-
-const TableFooterDiv = styled.div`
-  &:before {
-    content: '';
-    width: 100%;
-    height: 1em;
-  }
-`
-
-const TableCellDiv = styled.div`
-  font-size: 13px;
-  font-family: Helvetica, Arial, FreeSans, "Liberation Sans", sans-serif;
-`
 
 class ExperimentTable extends React.Component {
   constructor(props) {
@@ -31,7 +17,7 @@ class ExperimentTable extends React.Component {
       ordering: true,
       checkedArray: [],
       currentPage: 1,
-      selectedNumber: 10
+      entryPerPage: 10
     }
 
     this.sort = this.sort.bind(this)
@@ -47,7 +33,7 @@ class ExperimentTable extends React.Component {
     return ordering ? filteredElements :  filteredElements.reverse()
   }
 
-  filter(data, tableHeader){
+  filter(data, tableHeader) {
     const searchQuery = this.state.searchQuery.trim()
     return searchQuery.length === 0 ? data :
       data.filter(profile => _.isArray(profile[tableHeader[this.state.searchedColumn].dataParam]) ?
@@ -65,117 +51,112 @@ class ExperimentTable extends React.Component {
     }
   }
 
-  handleCheckbox(accession){
+  handleCheckbox(accession) {
     const checkedArray = this.state.checkedArray.slice()
     checkedArray.includes(accession) ?
-      _.remove(checkedArray, function(n) {return n === accession})
-      : checkedArray.push(accession)
+      _.remove(checkedArray, function(n) {return n === accession}) :
+      checkedArray.push(accession)
     this.setState({checkedArray: checkedArray})
   }
 
   render() {
-    const {selectedSearch, selectedKingdom, checkedArray, selectedNumber, currentPage, searchedColumn, searchQuery, orderedColumn, ordering} = this.state
+    const {selectedSearch, selectedKingdom, checkedArray, entryPerPage, currentPage, searchedColumn, searchQuery, orderedColumn, ordering} = this.state
     const {host, aaData, tableHeader, enableDownload, enableIndex} = this.props
 
-    const dataArray = selectedSearch ? this.sort(aaData).filter(data => data && Object.values(data).some(value => value.toString().toLowerCase().includes(selectedSearch.toLowerCase()))) :
+    const dataArray = selectedSearch ?
+      this.sort(aaData).filter(data => data && Object.values(data).some(value => value.toString().toLowerCase().includes(selectedSearch.toLowerCase()))) :
       this.filter(this.sort(aaData), tableHeader).filter(data => selectedKingdom ? data.kingdom === selectedKingdom : true)
-    const currentPageData = selectedNumber ? dataArray.slice(selectedNumber*(currentPage-1), selectedNumber*currentPage) : dataArray
+    const currentPageData = entryPerPage ? dataArray.slice(entryPerPage * (currentPage - 1), entryPerPage * currentPage) : dataArray
+    const kingdomOptions = [...new Set(aaData.map(data => data.kingdom ))]
+    const entriesPerPageOptions = [10, 25, 50]
 
     return (
-      <div>
+      <div className={`row expanded`}>
         <div className={`row expanded`}>
-          <div className={`large-2 medium-4 small-8 columns`}>
+          <div className={`small-12 medium-4 large-2 columns`}>
             <label> Kingdom:
-              <select defaultValue={``} className={`kingdom`}
-                onChange={event => this.setState({selectedKingdom: event.target.value})}>
+              <select defaultValue={``} className={`kingdom`} onChange={event => this.setState({selectedKingdom: event.target.value})}>
                 <option value={``} >All</option>
-                <option value={`plants`}>Plants</option>
-                <option value={`animals`}>Animals</option>
-                <option value={`fungi`}>Fungi</option>
+                {kingdomOptions.map(kingdom => <option value={kingdom}>{kingdom.charAt(0).toUpperCase() + kingdom.slice(1)}</option>)}
               </select>
             </label>
           </div>
-          <div className={`large-2 medium-4 small-8 columns`}>
+          <div className={`small-12 medium-4 large-2 columns`}>
             <label>Entries per page:
               <select defaultValue={10} onChange={this.setValue(`selectedNumber`)}>
-                <option value={10}>10</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
+                { entriesPerPageOptions.map(entries => aaData.length >= entries ? <option value={entries}>{entries}</option> : []) }
                 <option value={aaData.length}>All</option>
               </select>
             </label>
           </div>
-          <div className={`large-2 medium-4 small-8 columns`}>
+          <div className={`large-2 columns`}>
             <label>Search all columns:
               <input type={`search`} placeholder={`Type here ...`}
                 onChange={this.setValue(`selectedSearch`)}/></label>
           </div>
         </div>
+        <div className={`small-12 columns`} >
+          <Table border>
+            <Table.Head>
+              {enableIndex && <Table.TextHeaderCell key={`index`} flexBasis={100} flexShrink={100} flexGrow={100}>Index</Table.TextHeaderCell>}
+              {tableHeaderCells(tableHeader, searchedColumn, searchQuery, orderedColumn, ordering,
+                (columnNumber) =>
+                  this.setState({
+                    orderedColumn: columnNumber,
+                    ordering: !this.state.ordering}),
+                (value, columnNumber) =>
+                  this.setState({
+                    searchQuery: value,
+                    searchedColumn: columnNumber
+                  })
+              )}
+              {
+                enableDownload && <Table.TextHeaderCell className={`downloadHeader`} flexBasis={100} flexShrink={100} flexGrow={100}>
+                  {
+                    checkedArray.length > 0 ?
+                      <a href={`${host}experiments/download/zip?${checkedArray.map(accession => `accession=${accession}`).toString().replace(`,`,`&`)}`}>
+                        Download {checkedArray.length} {checkedArray.length === 1 ? `entry` : `entries`}</a> : `Download`
+                  }
+                </Table.TextHeaderCell>
+              }
+            </Table.Head>
 
-        <Table border style={{display:`grid`}}>
-          <Table.Head>
-            {enableIndex && <Table.TextHeaderCell key={`index`} flexBasis={100} flexShrink={100} flexGrow={100}>Index</Table.TextHeaderCell>}
-            {tableHeaderCells(tableHeader, searchedColumn, searchQuery, orderedColumn, ordering,
-              (columnNumber) =>
-                this.setState({
-                  orderedColumn: columnNumber,
-                  ordering: !this.state.ordering}),
-              (value, columnNumber) =>
-                this.setState({
-                  searchQuery: value,
-                  searchedColumn: columnNumber
-                })
-            )}
-            {
-              enableDownload && <Table.TextHeaderCell className={`downloadHeader`} flexBasis={100} flexShrink={100} flexGrow={100}>
-                {
-                  checkedArray.length > 0 ?
-                    <a href={`${host}experiments/download/zip?${checkedArray.map(accession => `accession=${accession}`).toString().replace(`,`,`&`)}`}>
-                    Download {checkedArray.length} {checkedArray.length === 1 ? `entry` : `entries`}</a>
-                    : `Download`
-                }
-              </Table.TextHeaderCell>
-            }
-          </Table.Head>
+            <Table.Body>
+              {currentPageData.map((data, index) => {
+                return (
+                  <Table.Row height={`auto`} backgroundColor={index % 2 === 0 ? `white`:`#F5F6F7`} paddingY={14} key={`row${index}`}>
 
-          <Table.Body>
-            {currentPageData.map((data, index) => {
-              return (
-                <Table.Row height="auto" backgroundColor={index%2===0 ? `white`:`#F5F6F7`} paddingY={14} key={`row${index}`}>
+                    {[
+                      enableIndex && <Table.Cell key={index} flexBasis={100} flexShrink={100} flexGrow={100}>
+                        {`${index + 1 + entryPerPage * (currentPage - 1)} `}
+                      </Table.Cell>,
 
-                  {[
-                    enableIndex && <Table.Cell key={index} flexBasis={100} flexShrink={100} flexGrow={100}>
-                      <TableCellDiv>{`${index + 1 + selectedNumber*(currentPage-1)} `}</TableCellDiv>
-                    </Table.Cell>,
+                      tableHeader.map((header, index) => {
+                        const cellItem = _.isArray(data[header.dataParam]) ?
+                          <ul key={`cell${index}`}>{data[header.dataParam].map(factor => <li key={factor}>{factor}</li>)}</ul> :
+                          data[header.dataParam]
+                        return <Table.Cell key={`${cellItem}`} flexBasis={header.width} flexShrink={100} flexGrow={100}>
+                          {
+                            header.link ? 
+                              <a href={`${host}${header.resource}/${data[header.link]}/${header.endpoint}`}>{cellItem}</a> :
+                              cellItem
+                          }
+                        </Table.Cell>
+                      }),
 
-                    tableHeader.map((header, index) => {
-                      const cellItem = _.isArray(data[header.dataParam]) ?
-                        <ul key={`cell${index}`}>{data[header.dataParam].map(factor => <li key={factor}>{factor}</li>)}</ul>
-                        : data[header.dataParam]
-                      return <Table.Cell key={`${cellItem}`} flexBasis={header.width} flexShrink={100} flexGrow={100}>
-                        <TableCellDiv>
-                          {header.link ? <a href={`${host}${header.resource}/${data[header.link]}/${header.endpoint}`}>{cellItem}</a> : cellItem}
-                        </TableCellDiv>
-                      </Table.Cell>
-                    }),
-
-                    enableDownload && <Table.Cell key={`checkbox`} flexBasis={100} flexShrink={100} flexGrow={100}>
-                      <TableCellDiv>
+                      enableDownload && <Table.Cell key={`checkbox`} flexBasis={100} flexShrink={100} flexGrow={100}>
                         <input type={`checkbox`} className={`checkbox`} checked={checkedArray.includes(data.experimentAccession)}
                           onChange={()=>this.handleCheckbox(data.experimentAccession)} />
-                      </TableCellDiv>
-                    </Table.Cell>
-                  ]}
+                      </Table.Cell>
+                    ]}
 
-                </Table.Row>)
-            })
-            }
-          </Table.Body>
-        </Table>
-        <TableFooterDiv className={`row expanded`}>
-          <TableFooter {...{dataArray, currentPage, selectedNumber}} data={aaData} onChange={i => this.setState({currentPage: i})}/>
-        </TableFooterDiv>
+                  </Table.Row>)
+              })
+              }
+            </Table.Body>
+          </Table>
+        </div>
+        <TableFooter {...{currentPage, entryPerPage}} dataArrayLength={dataArray.length} dataLength={aaData.length} onChange={i => this.setState({currentPage: i})}/>
       </div>
     )
   }

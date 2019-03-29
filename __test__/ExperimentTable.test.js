@@ -23,7 +23,7 @@ describe(`ExperimentTable`, () => {
 
   test(`should render three search general boxes and a table with head and body and two bottom info boxes`, () => {
     const wrapper = shallow(<ExperimentTable {...props}/>)
-    expect(wrapper.find(`.small-8.columns`)).toHaveLength(3)
+    expect(wrapper.find(`.small-12.columns`)).toHaveLength(3)
 
     expect(wrapper.find(Table)).toHaveLength(1)
     expect(wrapper.find(Table.Head)).toHaveLength(1)
@@ -75,21 +75,19 @@ describe(`ExperimentTable`, () => {
   test(`should change page by clicking buttons`, () => {
     const wrapper = mount(<ExperimentTable {...props}/>)
     const currentPage = wrapper.state().currentPage
-    wrapper.setState({selectedNumber: 1, currentPage: 1})
+    wrapper.setState({entryPerPage: 1, currentPage: 1})
     wrapper.update()
 
-    const nextButton = wrapper.find('a.next')
-    nextButton.simulate('click')
+    const nextButton = wrapper.find('.pagination li').last()
+    nextButton.children().simulate(`click`)
     wrapper.update()
-    expect(wrapper.state().currentPage).toEqual(currentPage+1)
+    expect(wrapper.state().currentPage).toEqual(currentPage + 1)
 
-    const prevButton = wrapper.find('a.previous')
-    prevButton.simulate('click')
+    const prevButton = wrapper.find('.pagination li').first()
+    prevButton.children().simulate(`click`)
     expect(wrapper.state().currentPage).toEqual(currentPage)
 
-    const pageNumberButton = wrapper.find(`.paginate_button.number a`)
-    const currentNumberButton = wrapper.find(`.paginate_button.number.current`)
-    expect(pageNumberButton).toHaveLength(data.length-1)
+    const currentNumberButton = wrapper.find(`.current`)
     expect(currentNumberButton).toHaveLength(1)
   })
 

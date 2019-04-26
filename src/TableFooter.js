@@ -34,7 +34,10 @@ const TableFooter = ({dataArrayLength, currentPage, entryPerPage, onChange, data
 TableFooter.propTypes = {
   dataArrayLength: PropTypes.number.isRequired,
   currentPage: PropTypes.number.isRequired,
-  entryPerPage: PropTypes.number.isRequired,
+  entryPerPage: PropTypes.oneOfType([
+  PropTypes.string,
+  PropTypes.number
+]),
   dataLength: PropTypes.number.isRequired,
   onChange: PropTypes.func.isRequired
 }

@@ -17,7 +17,7 @@ class ExperimentTable extends React.Component {
       ordering: true,
       checkedArray: [],
       currentPage: 1,
-      entryPerPage: 1
+      entryPerPage: 10
     }
 
     this.sort = this.sort.bind(this)

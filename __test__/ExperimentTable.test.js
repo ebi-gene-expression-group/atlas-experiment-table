@@ -5,6 +5,8 @@ import Adapter from 'enzyme-adapter-react-16'
 import {getRandomInt, TableCellDiv, data, tableHeader} from './TestUtils'
 import ExperimentTable from '../src/ExperimentTable'
 import TableFooter from '../src/TableFooter'
+import TableContent from '../src/TableContent'
+import TableSearchHeader from '../src/TableSearchHeader'
 import { Table } from 'evergreen-ui'
 import _ from "lodash"
 
@@ -23,12 +25,8 @@ describe(`ExperimentTable`, () => {
 
   test(`should render three search general boxes and a table with head and body and two bottom info boxes`, () => {
     const wrapper = shallow(<ExperimentTable {...props}/>)
-    expect(wrapper.find(`.small-12.columns`)).toHaveLength(3)
-
-    expect(wrapper.find(Table)).toHaveLength(1)
-    expect(wrapper.find(Table.Head)).toHaveLength(1)
-    expect(wrapper.find(Table.Body)).toHaveLength(1)
-
+    expect(wrapper.find(TableSearchHeader)).toHaveLength(1)
+    expect(wrapper.find(TableContent)).toHaveLength(1)
     expect(wrapper.find(TableFooter)).toHaveLength(1)
   })
 
@@ -53,7 +51,7 @@ describe(`ExperimentTable`, () => {
   test(`should filter based on kingdom selection`, () => {
     const event = {target: {name: `pollName`, value: `animals`}}
     const wrapper = mount(<ExperimentTable {...props}/>)
-    const kingdomSearch = wrapper.find(`.kingdom`).at(0)
+    const kingdomSearch = wrapper.find(`select`).first().at(0)
     kingdomSearch.simulate(`change`, event)
 
     expect(wrapper.state(`selectedKingdom`)).toEqual(`animals`)
@@ -89,14 +87,6 @@ describe(`ExperimentTable`, () => {
 
     const currentNumberButton = wrapper.find(`.current`)
     expect(currentNumberButton).toHaveLength(1)
-  })
-
-  test(`should show/hide download based on props`, () => {
-    const wrapper = shallow(<ExperimentTable {...props} enableDownload={true}/>)
-    expect(wrapper.find(`.downloadHeader`)).toHaveLength(1)
-
-    const wrapperNoDownload= shallow(<ExperimentTable {...props} enableDownload={false}/>)
-    expect(wrapperNoDownload.find(`.downloadHeader`)).toHaveLength(0)
   })
 
   test(`should save experiment accession by check download box`, () => {

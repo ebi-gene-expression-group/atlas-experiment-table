@@ -27,7 +27,7 @@ class ExperimentTable extends React.Component {
 
     this.kingdomOnChange = this.kingdomOnChange.bind(this)
     this.searchAllOnChange = this.searchAllOnChange.bind(this)
-    this.numberOfEntitiesPerPageOnChange = this.numberOfEntitiesPerPageOnChange.bind(this)
+    this.numberOfEntriesPerPageOnChange = this.numberOfEntriesPerPageOnChange.bind(this)
 
     this.handleCheckbox = this.handleCheckbox.bind(this)
     this.tableHeaderOnChange = this.tableHeaderOnChange.bind(this)
@@ -44,11 +44,11 @@ class ExperimentTable extends React.Component {
   filter(data, tableHeader) {
     const searchQuery = this.state.searchQuery.trim()
     return searchQuery.length === 0 ? data :
-      data.filter(data => Array.isArray(data[tableHeader[this.state.searchedColumnIndex].dataParam]) ?
-        _.flattenDeep(data[tableHeader[this.state.searchedColumnIndex].dataParam])
+      data.filter(row => Array.isArray(row[tableHeader[this.state.searchedColumnIndex].dataParam]) ?
+        _.flattenDeep(row[tableHeader[this.state.searchedColumnIndex].dataParam])
           .some(item => item.toLowerCase().includes(searchQuery.toLowerCase()))
         :
-        data[tableHeader[this.state.searchedColumnIndex].dataParam].toString().toLowerCase()
+        row[tableHeader[this.state.searchedColumnIndex].dataParam].toString().toLowerCase()
           .includes(searchQuery.toLowerCase())
       )
   }
@@ -72,7 +72,7 @@ class ExperimentTable extends React.Component {
     })
   }
 
-  numberOfEntitiesPerPageOnChange(e) {
+  numberOfEntriesPerPageOnChange(e) {
     this.setState({
       entriesPerPage: e.target.value,
       currentPage: 1
@@ -109,7 +109,7 @@ class ExperimentTable extends React.Component {
       dataArray.slice(entriesPerPage * (currentPage - 1), entriesPerPage * currentPage) : dataArray
 
     const kingdomOptions = [...new Set(aaData.map(data => data.kingdom ))]
-    const entriesPerPageOptions = [1, 10, 25, 50]
+    const entriesPerPageOptions = [10, 25, 50]
 
     return (
       <div className={`row expanded`}>
@@ -120,7 +120,7 @@ class ExperimentTable extends React.Component {
             aaData
           }}
           searchAllOnChange={this.searchAllOnChange}
-          numberOfEntitiesPerPageOnChange={this.numberOfEntitiesPerPageOnChange}
+          numberOfEntriesPerPageOnChange={this.numberOfEntriesPerPageOnChange}
           kingdomOnChange={this.kingdomOnChange}/>
 
         <TableContent

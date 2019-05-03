@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const TableSearchHeader = ({kingdomOptions, entriesPerPageOptions, aaData, searchAllOnChange, numberOfEntitiesPerPageOnChange, kingdomOnChange}) => {
+const TableSearchHeader = ({kingdomOptions, entriesPerPageOptions, aaData, searchAllOnChange, numberOfEntriesPerPageOnChange, kingdomOnChange}) => {
   return <div className={`row expanded`}>
     <div className={`small-12 medium-4 large-2 columns`}>
       <label> Kingdom:
@@ -19,7 +19,7 @@ const TableSearchHeader = ({kingdomOptions, entriesPerPageOptions, aaData, searc
 
     <div className={`small-12 medium-4 large-2 columns`}>
       <label>Entries per page:
-        <select defaultValue={10} onChange={e => numberOfEntitiesPerPageOnChange(e)}>
+        <select defaultValue={10} onChange={e => numberOfEntriesPerPageOnChange(e)}>
           {
             entriesPerPageOptions.map(entries => aaData.length >= entries ?
               <option key={entries} value={entries}>{entries}</option> :
@@ -43,7 +43,7 @@ TableSearchHeader.propTypes = {
   entriesPerPageOptions: PropTypes.array.isRequired,
   aaData: PropTypes.array.isRequired,
   searchAllOnChange: PropTypes.func.isRequired,
-  numberOfEntitiesPerPageOnChange: PropTypes.func.isRequired,
+  numberOfEntriesPerPageOnChange: PropTypes.func.isRequired,
   kingdomOnChange: PropTypes.func.isRequired
 }
 

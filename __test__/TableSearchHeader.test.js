@@ -13,7 +13,7 @@ describe(`TableSearchHeader`, () => {
     entriesPerPageOptions: [1, 4, 5, 100],
     aaData: data,
     searchAllOnChange: () => {},
-    entityOnChange: () => {},
+    numberOfEntitiesPerPageOnChange: () => {},
     kingdomOnChange: () => {}
   }
 

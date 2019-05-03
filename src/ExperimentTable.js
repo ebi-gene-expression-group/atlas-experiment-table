@@ -17,7 +17,7 @@ class ExperimentTable extends React.Component {
       ascendingOrder: true,
       checkedRows: [],
       currentPage: 1,
-      entriesPerPage: 1,
+      entriesPerPage: 10,
       selectedSearch: ``,
       selectedKingdom: ``
     }

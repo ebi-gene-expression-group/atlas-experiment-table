@@ -13,6 +13,7 @@ describe(`TableFooter`, () => {
     entriesPerPage: 1,
     selectedNumber: 2,
     dataLength:  data.length,
+    currentPage: 1,
     onChange: () => {}
   }
 

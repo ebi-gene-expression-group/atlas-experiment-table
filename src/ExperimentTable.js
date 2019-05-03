@@ -12,12 +12,14 @@ class ExperimentTable extends React.Component {
 
     this.state = {
       searchQuery: ``,
-      orderedColumn: 0,
-      searchedColumn: 1,
-      ordering: true,
-      checkedArray: [],
+      orderedColumnIndex: 0,
+      searchedColumnIndex: 1,
+      ascendingOrder: true,
+      checkedRows: [],
       currentPage: 1,
-      entryPerPage: 10
+      entriesPerPage: 1,
+      selectedSearch: ``,
+      selectedKingdom: ``
     }
 
     this.sort = this.sort.bind(this)
@@ -25,7 +27,7 @@ class ExperimentTable extends React.Component {
 
     this.kingdomOnChange = this.kingdomOnChange.bind(this)
     this.searchAllOnChange = this.searchAllOnChange.bind(this)
-    this.entityOnChange = this.entityOnChange.bind(this)
+    this.numberOfEntitiesPerPageOnChange = this.numberOfEntitiesPerPageOnChange.bind(this)
 
     this.handleCheckbox = this.handleCheckbox.bind(this)
     this.tableHeaderOnChange = this.tableHeaderOnChange.bind(this)
@@ -33,29 +35,30 @@ class ExperimentTable extends React.Component {
   }
 
   sort(data) {
-    const {ordering, orderedColumn} = this.state
-    const propKey = this.props.tableHeader[orderedColumn].dataParam
-    const filteredElements = _.sortBy(data, propKey)
-    return ordering ? filteredElements :  filteredElements.reverse()
+    const {ascendingOrder, orderedColumnIndex} = this.state
+    const propKey = this.props.tableHeader[orderedColumnIndex].dataParam
+    const sortedAscendingElements = _.sortBy(data, propKey)
+    return ascendingOrder ? sortedAscendingElements :  sortedAscendingElements.reverse()
   }
 
   filter(data, tableHeader) {
     const searchQuery = this.state.searchQuery.trim()
     return searchQuery.length === 0 ? data :
-      data.filter(profile => _.isArray(profile[tableHeader[this.state.searchedColumn].dataParam]) ?
-        _.flattenDeep(profile[tableHeader[this.state.searchedColumn].dataParam]).some(item=>item.toLowerCase().includes(searchQuery.toLowerCase())) :
-        profile[tableHeader[this.state.searchedColumn].dataParam].toString().toLowerCase().includes(searchQuery.toLowerCase())
+      data.filter(data => Array.isArray(data[tableHeader[this.state.searchedColumnIndex].dataParam]) ?
+        _.flattenDeep(data[tableHeader[this.state.searchedColumnIndex].dataParam])
+          .some(item => item.toLowerCase().includes(searchQuery.toLowerCase()))
+        :
+        data[tableHeader[this.state.searchedColumnIndex].dataParam].toString().toLowerCase()
+          .includes(searchQuery.toLowerCase())
       )
   }
 
   handleCheckbox(accession) {
-    const checkedArray = Array.from(this.state.checkedArray)
-    if(checkedArray.includes(accession)) {
-      _.remove(checkedArray, (n) => n === accession)
-    } else {
-      checkedArray.push(accession)
-    }
-    this.setState({checkedArray: checkedArray})
+    const checkedArray = this.state.checkedRows.includes(accession) ?
+      this.state.checkedRows.filter(e => e !== accession) :
+      this.state.checkedRows.concat(accession)
+
+    this.setState({checkedRows: checkedArray})
   }
 
   kingdomOnChange(e) {
@@ -69,55 +72,92 @@ class ExperimentTable extends React.Component {
     })
   }
 
-  entityOnChange(e) {
+  numberOfEntitiesPerPageOnChange(e) {
     this.setState({
-      entryPerPage: e.target.value,
+      entriesPerPage: e.target.value,
       currentPage: 1
     })
   }
 
   tableHeaderOnClick(columnNumber) {
     this.setState({
-      orderedColumn: columnNumber,
-      ordering: !this.state.ordering})
+      orderedColumnIndex: columnNumber,
+      ascendingOrder: !this.state.ascendingOrder})
   }
 
   tableHeaderOnChange(value, columnNumber) {
     this.setState({
       searchQuery: value,
-      searchedColumn: columnNumber
+      searchedColumnIndex: columnNumber
     })
   }
 
   render() {
-    const { selectedSearch, selectedKingdom, checkedArray, entryPerPage, currentPage, searchedColumn, searchQuery,
-      orderedColumn, ordering } = this.state
-    const {host, aaData, tableHeader, enableDownload, enableIndex} = this.props
+    const { searchQuery, searchedColumnIndex, selectedSearch, selectedKingdom, checkedRows } = this.state
+    const { orderedColumnIndex, ascendingOrder } = this.state
+    const { entriesPerPage, currentPage } = this.state
+    const { host, aaData, tableHeader, enableDownload, enableIndex } = this.props
 
     const dataArray = selectedSearch ?
-      this.sort(aaData).filter(data => data && Object.values(data).some(value => value.toString().toLowerCase().includes(selectedSearch.toLowerCase()))) :
-      this.filter(this.sort(aaData), tableHeader).filter(data => selectedKingdom ? data.kingdom === selectedKingdom : true)
-    const currentPageData = entryPerPage ? dataArray.slice(entryPerPage * (currentPage - 1), entryPerPage * currentPage) : dataArray
+      this.sort(aaData).filter(data => data && Object.values(data)
+        .some(value => value.toString().toLowerCase()
+          .includes(selectedSearch.toLowerCase()))) :
+      this.filter(this.sort(aaData), tableHeader)
+        .filter(data => selectedKingdom ? data.kingdom === selectedKingdom : true)
+
+    const currentPageData = entriesPerPage ?
+      dataArray.slice(entriesPerPage * (currentPage - 1), entriesPerPage * currentPage) : dataArray
+
     const kingdomOptions = [...new Set(aaData.map(data => data.kingdom ))]
     const entriesPerPageOptions = [1, 10, 25, 50]
 
     return (
       <div className={`row expanded`}>
-        <TableSearchHeader {...{kingdomOptions, entriesPerPageOptions, aaData}}
-          searchAllOnChange={this.searchAllOnChange} entityOnChange={this.entityOnChange} kingdomOnChange={this.kingdomOnChange}/>
-        <div className={`small-12 columns`} >
-          <TableContent {...{checkedArray, tableHeader, entryPerPage, currentPage, searchedColumn, searchQuery,
-            orderedColumn, ordering, host, enableDownload, enableIndex, currentPageData}}
-          tableHeaderOnChange={this.tableHeaderOnChange} tableHeaderOnClick={this.tableHeaderOnClick} downloadOnChange={accession => this.handleCheckbox(accession)}/>
-        </div>
-        <TableFooter {...{currentPage, entryPerPage}} dataArrayLength={dataArray.length} dataLength={aaData.length} onChange={i => this.setState({currentPage: i})}/>
+        <TableSearchHeader
+          {...{
+            kingdomOptions,
+            entriesPerPageOptions,
+            aaData
+          }}
+          searchAllOnChange={this.searchAllOnChange}
+          numberOfEntitiesPerPageOnChange={this.numberOfEntitiesPerPageOnChange}
+          kingdomOnChange={this.kingdomOnChange}/>
+
+        <TableContent
+          {...{
+            checkedRows,
+            tableHeader,
+            entriesPerPage,
+            currentPage,
+            searchedColumnIndex,
+            searchQuery,
+            orderedColumnIndex,
+            ascendingOrder,
+            host,
+            enableDownload,
+            enableIndex,
+            currentPageData
+          }}
+          tableHeaderOnChange={this.tableHeaderOnChange}
+          tableHeaderOnClick={this.tableHeaderOnClick}
+          downloadOnChange={accession => this.handleCheckbox(accession)}/>
+
+
+        <TableFooter
+          {...{
+            currentPage,
+            entriesPerPage
+          }}
+          dataArrayLength={dataArray.length}
+          dataLength={aaData.length} 
+          onChange={i => this.setState({currentPage: i})}/>
       </div>
     )
   }
 }
 
 ExperimentTable.propTypes = {
-  aaData: PropTypes.array,
+  aaData: PropTypes.array.isRequired,
   host: PropTypes.string.isRequired,
   resource: PropTypes.string.isRequired,
   tableHeader: PropTypes.array.isRequired,

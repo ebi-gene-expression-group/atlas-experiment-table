@@ -1,3 +1,1 @@
-import ExperimentTable from './ExperimentTable'
-
-export default ExperimentTable
+export  { default } from './ExperimentTable'

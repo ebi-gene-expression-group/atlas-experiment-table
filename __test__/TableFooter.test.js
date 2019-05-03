@@ -10,7 +10,7 @@ Enzyme.configure({ adapter: new Adapter() })
 describe(`TableFooter`, () => {
   const props = {
     dataArrayLength: Math.random() * 10,
-    entryPerPage: 1,
+    entriesPerPage: 1,
     selectedNumber: 2,
     dataLength:  data.length,
     onChange: () => {}
@@ -20,7 +20,6 @@ describe(`TableFooter`, () => {
     const wrapper = shallow(<TableFooter {...props}/>)
     expect(wrapper.find(`li`).first().key()).toBe(`previous`)
     expect(wrapper.find(`li`).last().key()).toBe(`next`)
-    expect(wrapper.find(`div`).first().key()).toBe(`bottom-info`)
   })
 
 })

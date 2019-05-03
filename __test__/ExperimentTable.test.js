@@ -32,14 +32,14 @@ describe(`ExperimentTable`, () => {
 
 
   test(`should sort table content and change header text icon`, () => {
-    const randomColumn =  getRandomInt(1, tableHeader.length)
-    props.tableHeader[randomColumn].type=`sort`
+    const randomColumnIndex =  getRandomInt(1, tableHeader.length)
+    props.tableHeader[randomColumnIndex].type=`sort`
     const wrapper = mount(<ExperimentTable {...props}/>)
 
     expect(wrapper.find(`.icon.icon-common.icon-sort-up`)).toHaveLength(1)
     expect(wrapper.find(`.icon.icon-common.icon-sort-down`)).toHaveLength(0)
 
-    const sortedHeader = wrapper.find(`.header${randomColumn}`).at(0)
+    const sortedHeader = wrapper.find(`.header${randomColumnIndex}`).at(0)
     sortedHeader.simulate('click')
     wrapper.update()
     expect(wrapper.find(`.icon.icon-common.icon-sort-up`)).toHaveLength(0)
@@ -73,7 +73,7 @@ describe(`ExperimentTable`, () => {
   test(`should change page by clicking buttons`, () => {
     const wrapper = mount(<ExperimentTable {...props}/>)
     const currentPage = wrapper.state().currentPage
-    wrapper.setState({entryPerPage: 1, currentPage: 1})
+    wrapper.setState({entriesPerPage: 1, currentPage: 1})
     wrapper.update()
 
     const nextButton = wrapper.find('.pagination li').last()
@@ -93,15 +93,15 @@ describe(`ExperimentTable`, () => {
     const randomRow = getRandomInt(0, data.length)
 
     const wrapper = mount(<ExperimentTable {...props} enableDownload={true}/>)
-    const propKey = tableHeader[wrapper.state(`orderedColumn`)].dataParam
-    const filteredElements = _.sortBy(data, propKey)
+    const propKey = tableHeader[wrapper.state(`orderedColumnIndex`)].dataParam
+    const sortedElements = _.sortBy(data, propKey)
 
-    expect(wrapper.state(`checkedArray`)).toEqual([])
+    expect(wrapper.state(`checkedRows`)).toEqual([])
     const checkbox = wrapper.find(`.checkbox`).at(randomRow)
     checkbox.simulate(`change`)
-    expect(wrapper.state(`checkedArray`)).toEqual([filteredElements[randomRow].experimentAccession])
+    expect(wrapper.state(`checkedRows`)).toEqual([sortedElements[randomRow].experimentAccession])
     checkbox.simulate(`change`)
-    expect(wrapper.state(`checkedArray`)).toEqual([])
+    expect(wrapper.state(`checkedRows`)).toEqual([])
   })
 
 })

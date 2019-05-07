@@ -101,8 +101,16 @@ class ExperimentTable extends React.Component {
     const { entriesPerPage, currentPage } = this.state
     const { host, aaData, tableHeader, enableDownload } = this.props
 
+    const displayedFields = tableHeader.map(header => header.dataParam)
+    const displayedData = aaData.map(data => {
+      let obj = {}
+      Object.keys(data).map(key => displayedFields.includes(key) ?
+        Object.assign(obj, {[key]: data[key]}): null)
+      return obj
+    })
+
     const dataArray = selectedSearch.trim() ?
-      this.sort(aaData).filter(data => data && Object.values(data)
+      this.sort(displayedData).filter(data => data && Object.values(data)
         .some(value => value.toString().toLowerCase()
           .includes(selectedSearch.trim().toLowerCase()))) :
       this.filter(this.sort(aaData), tableHeader)

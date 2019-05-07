@@ -12,13 +12,24 @@ Enzyme.configure({ adapter: new Adapter() })
 describe(`TableContent`, () => {
   const props = {
     enableIndex: true,
-    tableHeader: [`header1`, `header2`],
+    tableHeader: [{
+      type: `search`,
+      title: `title1`,
+      width: 12,
+      dataParam: `hello`
+    },
+    {
+      type: `search`,
+      title: `title2`,
+      width: 3,
+      dataParam: `hi`
+    }],
     searchedColumnIndex: 2,
     searchQuery: `search`,
     orderedColumnIndex: 1,
     ascendingOrder: true,
     enableDownload: true,
-    checkedRows: [`first`, `last`],
+    checkedRows: [1, 2],
     currentPageData: data,
     host: `boo`,
     entriesPerPage: 2,

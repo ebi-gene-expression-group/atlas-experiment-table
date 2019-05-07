@@ -13,8 +13,9 @@ describe(`TableSearchHeader`, () => {
     entriesPerPageOptions: [1, 4, 5, 100],
     aaData: data,
     searchAllOnChange: () => {},
-    numberOfEntitiesPerPageOnChange: () => {},
-    kingdomOnChange: () => {}
+    numberOfEntriesPerPageOnChange: () => {},
+    kingdomOnChange: () => {},
+    totalNumberOfRows: 2
   }
 
   test(`should render two dropdown menues and a search box`, () => {

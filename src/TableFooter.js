@@ -12,9 +12,11 @@ const TableFooter = ({dataArrayLength, currentPage, entriesPerPage, onChange, da
     <div className="row expanded padding-top-medium">
       <div className={`small-6 columns`}>
         {
-          dataArrayLength === 0 ?
-            `There are no results for this query.` :
-            `Showing ${dataArrayLength} out of ${dataLength} experiments.`
+          dataLength === 0 ?
+            `No experiments are shown because a query doesn’t match.` :
+            dataArrayLength === 0 ?
+              `Nothing to see here. Move along!` :
+              `Showing ${dataArrayLength} results from a total of ${dataLength} experiments.`
         }
       </div>
 

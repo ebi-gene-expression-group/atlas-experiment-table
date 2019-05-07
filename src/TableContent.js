@@ -5,16 +5,13 @@ import URI from 'urijs'
 
 import tableHeaderCells from './tableHeaderCells'
 
-const TableContent = ({enableIndex, tableHeader, searchedColumnIndex, searchQuery, orderedColumnIndex,
-  ascendingOrder, enableDownload, checkedRows, currentPageData, host, entriesPerPage, currentPage,
+const TableContent = ({tableHeader, searchedColumnIndex, searchQuery, orderedColumnIndex,
+  ascendingOrder, enableDownload, checkedRows, currentPageData, host,
   tableHeaderOnClick, tableHeaderOnChange, downloadOnChange}) =>
   <div className={`row expanded`}>
     <div className={`small-12 columns`} >
       <Table border>
         <Table.Head>
-          {
-            enableIndex && <Table.TextHeaderCell key={`index`} flexBasis={100} flexShrink={100} flexGrow={100}>Index</Table.TextHeaderCell>
-          }
 
           {
             tableHeaderCells(tableHeader, searchedColumnIndex, searchQuery, orderedColumnIndex, ascendingOrder,
@@ -27,8 +24,9 @@ const TableContent = ({enableIndex, tableHeader, searchedColumnIndex, searchQuer
             enableDownload && <Table.TextHeaderCell className={`downloadHeader`} flexBasis={100} flexShrink={100} flexGrow={100}>
               {
                 checkedRows.length > 0 ?
-                  <a href={URI(`${host}experiments/download/zip`).search({accession: checkedRows})}>
-              Download {checkedRows.length} {checkedRows.length === 1 ? `entry` : `entries`}</a> :
+                  <a href={URI(`experiments/download/zip`, host).search({accession: checkedRows}).toString()}>
+                    Download {checkedRows.length} {checkedRows.length === 1 ? `entry` : `entries`}
+                  </a> :
                   `Download`
               }
             </Table.TextHeaderCell>
@@ -38,21 +36,17 @@ const TableContent = ({enableIndex, tableHeader, searchedColumnIndex, searchQuer
         <Table.Body>
           {currentPageData.map((data, index) => {
             return (
-              <Table.Row height={`auto`} backgroundColor={index % 2 === 0 ? `white`:`#F5F6F7`} paddingY={14} key={`row${index}`}>
+              <Table.Row height={`auto`} backgroundColor={index % 2 === 0 ? `white`:`#F1F1F1`} paddingY={14} key={`row${index}`}>
 
                 {[
-                  enableIndex && <Table.Cell key={index} flexBasis={100} flexShrink={100} flexGrow={100}>
-                    {`${index + 1 + entriesPerPage * (currentPage - 1)} `}
-                  </Table.Cell>,
-
                   tableHeader.map((header, index) => {
                     const cellItem = Array.isArray(data[header.dataParam]) ?
-                      <ul key={`cell${index}`}>{data[header.dataParam].map(factor => <li key={factor}>{factor}</li>)}</ul> :
+                      <ul key={`cell${index}`}>{data[header.dataParam].map(element => <li key={element}>{element}</li>)}</ul> :
                       data[header.dataParam]
                     return <Table.Cell key={`${cellItem}`} flexBasis={header.width} flexShrink={100} flexGrow={100}>
                       {
                         header.link ?
-                          <a href={URI(`${host}${header.resource}/${data[header.link]}/${header.endpoint}`)}>{cellItem}</a> :
+                          <a href={URI(`${header.resource}/${data[header.link]}/${header.endpoint}`, host)}>{cellItem}</a> :
                           cellItem
                       }
                     </Table.Cell>
@@ -73,15 +67,21 @@ const TableContent = ({enableIndex, tableHeader, searchedColumnIndex, searchQuer
   </div>
 
 TableContent.propTypes = {
-  enableIndex: PropTypes.bool.isRequired,
-  tableHeader: PropTypes.array.isRequired,
+  tableHeader: PropTypes.arrayOf(
+    PropTypes.shape({
+      type: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      width: PropTypes.number.isRequired,
+      dataParam: PropTypes.string.isRequired
+    })
+  ),
   searchedColumnIndex: PropTypes.number.isRequired,
   searchQuery: PropTypes.string.isRequired,
   orderedColumnIndex: PropTypes.number.isRequired,
   ascendingOrder: PropTypes.bool.isRequired,
   enableDownload: PropTypes.bool.isRequired,
-  checkedRows: PropTypes.array.isRequired,
-  currentPageData: PropTypes.array.isRequired,
+  checkedRows: PropTypes.arrayOf(PropTypes.number).isRequired,
+  currentPageData: PropTypes.arrayOf(PropTypes.object).isRequired,
   host: PropTypes.string.isRequired,
   entriesPerPage: PropTypes.oneOfType([
     PropTypes.string,

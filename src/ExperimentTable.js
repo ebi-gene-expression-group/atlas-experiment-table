@@ -9,7 +9,7 @@ import TableContent from './TableContent'
 class ExperimentTable extends React.Component {
   constructor(props) {
     super(props)
-
+    this.entriesPerPageOptions = [10, 25, 50]
     this.state = {
       searchQuery: ``,
       orderedColumnIndex: 0,
@@ -17,7 +17,7 @@ class ExperimentTable extends React.Component {
       ascendingOrder: true,
       checkedRows: [],
       currentPage: 1,
-      entriesPerPage: 10,
+      entriesPerPage: this.entriesPerPageOptions[0],
       selectedSearch: ``,
       selectedKingdom: ``
     }
@@ -62,7 +62,10 @@ class ExperimentTable extends React.Component {
   }
 
   kingdomOnChange(e) {
-    this.setState({selectedKingdom: e.target.value})
+    this.setState({
+      selectedKingdom: e.target.value,
+      currentPage: 1
+    })
   }
 
   searchAllOnChange(e) {
@@ -96,12 +99,12 @@ class ExperimentTable extends React.Component {
     const { searchQuery, searchedColumnIndex, selectedSearch, selectedKingdom, checkedRows } = this.state
     const { orderedColumnIndex, ascendingOrder } = this.state
     const { entriesPerPage, currentPage } = this.state
-    const { host, aaData, tableHeader, enableDownload, enableIndex } = this.props
+    const { host, aaData, tableHeader, enableDownload } = this.props
 
-    const dataArray = selectedSearch ?
+    const dataArray = selectedSearch.trim() ?
       this.sort(aaData).filter(data => data && Object.values(data)
         .some(value => value.toString().toLowerCase()
-          .includes(selectedSearch.toLowerCase()))) :
+          .includes(selectedSearch.trim().toLowerCase()))) :
       this.filter(this.sort(aaData), tableHeader)
         .filter(data => selectedKingdom ? data.kingdom === selectedKingdom : true)
 
@@ -109,16 +112,13 @@ class ExperimentTable extends React.Component {
       dataArray.slice(entriesPerPage * (currentPage - 1), entriesPerPage * currentPage) : dataArray
 
     const kingdomOptions = [...new Set(aaData.map(data => data.kingdom ))]
-    const entriesPerPageOptions = [10, 25, 50]
 
     return (
       <div className={`row expanded`}>
         <TableSearchHeader
-          {...{
-            kingdomOptions,
-            entriesPerPageOptions,
-            aaData
-          }}
+          kingdomOptions={kingdomOptions}
+          totalNumberOfRows={aaData.length}
+          entriesPerPageOptions={this.entriesPerPageOptions}
           searchAllOnChange={this.searchAllOnChange}
           numberOfEntriesPerPageOnChange={this.numberOfEntriesPerPageOnChange}
           kingdomOnChange={this.kingdomOnChange}/>
@@ -135,7 +135,6 @@ class ExperimentTable extends React.Component {
             ascendingOrder,
             host,
             enableDownload,
-            enableIndex,
             currentPageData
           }}
           tableHeaderOnChange={this.tableHeaderOnChange}
@@ -160,9 +159,15 @@ ExperimentTable.propTypes = {
   aaData: PropTypes.array.isRequired,
   host: PropTypes.string.isRequired,
   resource: PropTypes.string.isRequired,
-  tableHeader: PropTypes.array.isRequired,
-  enableDownload: PropTypes.bool.isRequired,
-  enableIndex: PropTypes.bool.isRequired,
+  tableHeader: PropTypes.arrayOf(
+    PropTypes.shape({
+      type: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      width: PropTypes.number.isRequired,
+      dataParam: PropTypes.string.isRequired
+    })
+  ),
+  enableDownload: PropTypes.bool.isRequired
 }
 
 export default ExperimentTable

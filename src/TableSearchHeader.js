@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const TableSearchHeader = ({kingdomOptions, entriesPerPageOptions, aaData, searchAllOnChange, numberOfEntriesPerPageOnChange, kingdomOnChange}) => {
-  return <div className={`row expanded`}>
+const TableSearchHeader = ({kingdomOptions, entriesPerPageOptions, totalNumberOfRows, searchAllOnChange, numberOfEntriesPerPageOnChange, kingdomOnChange}) =>
+  <div className={`row expanded`}>
     <div className={`small-12 medium-4 large-2 columns`}>
       <label> Kingdom:
         <select defaultValue={``} onChange={e => kingdomOnChange(e)}>
@@ -19,29 +19,29 @@ const TableSearchHeader = ({kingdomOptions, entriesPerPageOptions, aaData, searc
 
     <div className={`small-12 medium-4 large-2 columns`}>
       <label>Entries per page:
-        <select defaultValue={10} onChange={e => numberOfEntriesPerPageOnChange(e)}>
+        <select defaultValue={entriesPerPageOptions[0]} onChange={e => numberOfEntriesPerPageOnChange(e)}>
           {
-            entriesPerPageOptions.map(entries => aaData.length >= entries ?
+            entriesPerPageOptions.map(entries => totalNumberOfRows >= entries ?
               <option key={entries} value={entries}>{entries}</option> :
               [])
           }
-          <option value={aaData.length}>All</option>
+          <option value={totalNumberOfRows}>All</option>
         </select>
       </label>
     </div>
 
     <div className={`small-12 medium-4 large-2 columns`}>
       <label>Search all columns:
-        <input type={`search`} placeholder={`Type here ...`}
+        <input type={`search`}
           onChange={e => searchAllOnChange(e)}/></label>
     </div>
   </div>
-}
+
 
 TableSearchHeader.propTypes = {
-  kingdomOptions: PropTypes.array.isRequired,
+  kingdomOptions: PropTypes.arrayOf(PropTypes.string).isRequired,
   entriesPerPageOptions: PropTypes.array.isRequired,
-  aaData: PropTypes.array.isRequired,
+  totalNumberOfRows: PropTypes.number.isRequired,
   searchAllOnChange: PropTypes.func.isRequired,
   numberOfEntriesPerPageOnChange: PropTypes.func.isRequired,
   kingdomOnChange: PropTypes.func.isRequired

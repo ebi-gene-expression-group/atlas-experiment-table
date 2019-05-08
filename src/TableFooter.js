@@ -8,15 +8,17 @@ const TableFooter = ({dataArrayLength, currentPage, entriesPerPage, onChange, da
       <li key={`bottom${i}`}><a onClick={() => onChange(i)}>{i}</a></li>)
   }
 
+  const pageInfo = pageNumbers.length===1 ? `` : ` (Page ${currentPage} of ${pageNumbers.length})`
+
   return (
     <div className="row expanded padding-top-medium">
       <div className={`small-6 columns`}>
         {
           dataLength === 0 ?
-            `No experiments are shown because a query doesn’t match.` :
+            `Nothing to see here. Move along!` :
             dataArrayLength === 0 ?
-              `Nothing to see here. Move along!` :
-              `Showing ${dataArrayLength} results from a total of ${dataLength} experiments.`
+              ` No experiments are shown because a query doesn’t match.` :
+              `Showing ${entriesPerPage} results from a total of ${dataLength} experiments${pageInfo}.`
         }
       </div>
 

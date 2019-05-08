@@ -8,7 +8,7 @@ const TableFooter = ({dataArrayLength, currentPageDataLength, currentPage, entri
       <li key={`bottom${i}`}><a onClick={() => onChange(i)}>{i}</a></li>)
   }
 
-  const pageInfo = pageNumbers.length===1 ? `` : ` (Page ${currentPage} of ${pageNumbers.length})`
+  const pageInfo = pageNumbers.length === 1 ? `` : ` (Page ${currentPage} of ${pageNumbers.length})`
 
   return (
     <div className="row expanded padding-top-medium">
@@ -18,7 +18,8 @@ const TableFooter = ({dataArrayLength, currentPageDataLength, currentPage, entri
             `Nothing to see here. Move along!` :
             dataArrayLength === 0 ?
               ` No experiments are shown because a query doesn’t match.` :
-              `Showing ${currentPageDataLength} result${currentPageDataLength===1?``:`s`} from a total of ${dataLength} experiments${pageInfo}.`
+              `Showing ${currentPageDataLength} result${currentPageDataLength ===1 ? ``: `s`}
+              ${dataArrayLength < dataLength ? ` out of ${dataArrayLength}` : ``} from a total of ${dataLength} experiments${pageInfo}.`
         }
       </div>
 

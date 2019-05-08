@@ -18,7 +18,7 @@ const TableFooter = ({dataArrayLength, currentPageDataLength, currentPage, entri
             `Nothing to see here. Move along!` :
             dataArrayLength === 0 ?
               ` No experiments are shown because a query doesn’t match.` :
-              `Showing ${currentPageDataLength} results from a total of ${dataLength} experiments${pageInfo}.`
+              `Showing ${currentPageDataLength} result${currentPageDataLength===1?``:`s`} from a total of ${dataLength} experiments${pageInfo}.`
         }
       </div>
 

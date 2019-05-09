@@ -95,6 +95,13 @@ class ExperimentTable extends React.Component {
     })
   }
 
+  componentDidMount(){
+    this.props.species && this.tableHeaderOnChange(
+      this.props.species,
+      this.props.tableHeader.findIndex(header => header.dataParam ==="species")
+    )
+  }
+
   render() {
     const { searchQuery, searchedColumnIndex, selectedSearch, selectedKingdom, checkedRows } = this.state
     const { orderedColumnIndex, ascendingOrder } = this.state
@@ -167,6 +174,7 @@ class ExperimentTable extends React.Component {
 ExperimentTable.propTypes = {
   aaData: PropTypes.array.isRequired,
   host: PropTypes.string.isRequired,
+  species: PropTypes.string,
   resource: PropTypes.string.isRequired,
   tableHeader: PropTypes.arrayOf(
     PropTypes.shape({

@@ -11,9 +11,9 @@ class ExperimentTable extends React.Component {
     super(props)
     this.entriesPerPageOptions = [10, 25, 50]
     this.state = {
-      searchQuery: ``,
+      searchQuery: this.props.species,
       orderedColumnIndex: 0,
-      searchedColumnIndex: 1,
+      searchedColumnIndex: this.props.tableHeader.findIndex(header => header.dataParam === "species"),
       ascendingOrder: true,
       checkedRows: [],
       currentPage: 1,
@@ -93,13 +93,6 @@ class ExperimentTable extends React.Component {
       searchQuery: value,
       searchedColumnIndex: columnNumber
     })
-  }
-
-  componentDidMount(){
-    this.props.species && this.tableHeaderOnChange(
-      this.props.species,
-      this.props.tableHeader.findIndex(header => header.dataParam ==="species")
-    )
   }
 
   render() {

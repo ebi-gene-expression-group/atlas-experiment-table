@@ -11,9 +11,10 @@ class ExperimentTable extends React.Component {
     super(props)
     this.entriesPerPageOptions = [10, 25, 50]
     this.state = {
-      searchQuery: this.props.species,
+      searchQuery: this.props.species.trim(),
       orderedColumnIndex: 0,
-      searchedColumnIndex: this.props.tableHeader.findIndex(header => header.dataParam === "species"),
+      searchedColumnIndex: this.props.species.trim() ?
+        this.props.tableHeader.findIndex(header => header.dataParam === "species") : 1,
       ascendingOrder: true,
       checkedRows: [],
       currentPage: 1,
@@ -178,6 +179,10 @@ ExperimentTable.propTypes = {
     })
   ),
   enableDownload: PropTypes.bool.isRequired
+}
+
+ExperimentTable.defaultProps = {
+  species: ``
 }
 
 export default ExperimentTable

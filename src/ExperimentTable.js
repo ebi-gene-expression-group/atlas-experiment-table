@@ -14,7 +14,7 @@ class ExperimentTable extends React.Component {
       searchQuery: this.props.species.trim(),
       orderedColumnIndex: 0,
       searchedColumnIndex: this.props.species.trim() ?
-        this.props.tableHeader.findIndex(header => header.dataParam === "species") : 1,
+        this.props.tableHeader.findIndex(header => header.dataParam === `species`) : 1,
       ascendingOrder: true,
       checkedRows: [],
       currentPage: 1,

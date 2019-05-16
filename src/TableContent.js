@@ -2,8 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'evergreen-ui'
 import URI from 'urijs'
+import ReactTooltip from 'react-tooltip'
 
 import tableHeaderCells from './tableHeaderCells'
+import TooltipIcon from './TooltipIcon'
+
+const downloadTooltip = `<ul>
+  <li> Raw filtered count matrix after quantification</li>
+  <li>  Normalised filtered count matrix after quantification</li>
+  <li>  TPM (transcripts per million RNA molecules - only available for SmartSeq)</li>
+  <li>  SDRF file with the experimental design metadata</li>
+</ul>`
 
 const TableContent = ({tableHeader, searchedColumnIndex, searchQuery, orderedColumnIndex,
   ascendingOrder, enableDownload, checkedRows, currentPageData, host,
@@ -24,16 +33,19 @@ const TableContent = ({tableHeader, searchedColumnIndex, searchQuery, orderedCol
             enableDownload && <Table.TextHeaderCell className={`downloadHeader`} flexBasis={100} flexShrink={100} flexGrow={100}>
               {
                 checkedRows.length > 0 ?
-                  <a href={URI(`experiments/download/zip`, host).search({accession: checkedRows}).toString()}>
-                    Download {checkedRows.length} {checkedRows.length === 1 ? `entry` : `entries`}
-                  </a> :
-                  `Download`
+                  <div>
+                    <a href={URI(`experiments/download/zip`, host).search({accession: checkedRows}).toString()}>
+                      Download {checkedRows.length} {checkedRows.length === 1 ? `entry` : `entries`}
+                    </a>
+                    <TooltipIcon tooltipText={downloadTooltip}/>
+                  </div> :
+                  <div>Download<TooltipIcon tooltipText={downloadTooltip}/></div>
               }
             </Table.TextHeaderCell>
           }
         </Table.Head>
-
-        <Table.Body style={{"overflow-y":`hidden`}}>
+        <ReactTooltip effect={`solid`}/>
+        <Table.Body style={{"overflowY":`hidden`}}>
           {currentPageData.map((data, index) => {
             return (
               <Table.Row height={`auto`} backgroundColor={index % 2 === 0 ? `white`:`#F1F1F1`} paddingY={14} key={`row${index}`}>
@@ -46,7 +58,7 @@ const TableContent = ({tableHeader, searchedColumnIndex, searchQuery, orderedCol
                     return <Table.Cell key={`${cellItem}`} flexBasis={header.width} flexShrink={100} flexGrow={100}>
                       {
                         header.link ?
-                          <a href={URI(`${header.resource}/${data[header.link]}/${header.endpoint}`, host)}>{cellItem}</a> :
+                          <div><a href={URI(`${header.resource}/${data[header.link]}/${header.endpoint}`, host)}>{cellItem}</a></div>:
                           cellItem
                       }
                     </Table.Cell>

@@ -21,6 +21,7 @@ describe(`TableContent`, () => {
       width: 3,
       dataParam: `hi`
     }],
+    downloadTooltip: `tooth`,
     searchedColumnIndex: 2,
     searchQuery: `search`,
     orderedColumnIndex: 1,

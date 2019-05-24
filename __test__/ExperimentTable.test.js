@@ -16,7 +16,8 @@ describe(`ExperimentTable`, () => {
     resource: `bool`,
     enableDownload: true,
     enableIndex: true,
-    TableCellDiv: TableCellDiv
+    TableCellDiv: TableCellDiv,
+    downloadTooltip: `tooth`
   }
 
   test(`should render three search general boxes and a table with head and body and two bottom info boxes`, () => {

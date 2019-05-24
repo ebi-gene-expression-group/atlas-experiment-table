@@ -7,16 +7,9 @@ import ReactTooltip from 'react-tooltip'
 import tableHeaderCells from './tableHeaderCells'
 import TooltipIcon from './TooltipIcon'
 
-const downloadTooltip = `<ul>
-  <li> Raw filtered count matrix after quantification</li>
-  <li>  Normalised filtered count matrix after quantification</li>
-  <li>  TPM (transcripts per million RNA molecules - only available for SmartSeq)</li>
-  <li>  SDRF file with the experimental design metadata</li>
-</ul>`
-
 const TableContent = ({tableHeader, searchedColumnIndex, searchQuery, orderedColumnIndex,
   ascendingOrder, enableDownload, checkedRows, currentPageData, host,
-  tableHeaderOnClick, tableHeaderOnChange, downloadOnChange}) =>
+  tableHeaderOnClick, tableHeaderOnChange, downloadOnChange, downloadTooltip}) =>
   <div className={`row expanded`}>
     <div className={`small-12 columns`} >
       <Table border>
@@ -32,14 +25,16 @@ const TableContent = ({tableHeader, searchedColumnIndex, searchQuery, orderedCol
           {
             enableDownload && <Table.TextHeaderCell className={`downloadHeader`} flexBasis={100} flexShrink={100} flexGrow={100}>
               {
-                checkedRows.length > 0 ?
-                  <div>
-                    <a href={URI(`experiments/download/zip`, host).search({accession: checkedRows}).toString()}>
+                <div>
+                  {
+                    checkedRows.length > 0 ?
+                      <a href={URI(`experiments/download/zip`, host).search({accession: checkedRows}).toString()}>
                       Download {checkedRows.length} {checkedRows.length === 1 ? `entry` : `entries`}
-                    </a>
-                    <TooltipIcon tooltipText={downloadTooltip}/>
-                  </div> :
-                  <div>Download<TooltipIcon tooltipText={downloadTooltip}/></div>
+                      </a> :
+                      `Download`
+                  }
+                  <TooltipIcon tooltipText={downloadTooltip}/>
+                </div>
               }
             </Table.TextHeaderCell>
           }
@@ -102,7 +97,8 @@ TableContent.propTypes = {
   currentPage: PropTypes.number.isRequired,
   tableHeaderOnClick: PropTypes.func.isRequired,
   tableHeaderOnChange: PropTypes.func.isRequired,
-  downloadOnChange: PropTypes.func.isRequired
+  downloadOnChange: PropTypes.func.isRequired,
+  downloadTooltip: PropTypes.string.isRequired
 }
 
 export default TableContent

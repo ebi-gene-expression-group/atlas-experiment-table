@@ -87,7 +87,7 @@ TableContent.propTypes = {
   orderedColumnIndex: PropTypes.number.isRequired,
   ascendingOrder: PropTypes.bool.isRequired,
   enableDownload: PropTypes.bool.isRequired,
-  checkedRows: PropTypes.arrayOf(PropTypes.number).isRequired,
+  checkedRows: PropTypes.arrayOf(PropTypes.string).isRequired,
   currentPageData: PropTypes.arrayOf(PropTypes.object).isRequired,
   host: PropTypes.string.isRequired,
   entriesPerPage: PropTypes.oneOfType([

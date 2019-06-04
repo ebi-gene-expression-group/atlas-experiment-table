@@ -6,7 +6,7 @@
   "scripts": {
     "prepack": "rm -rf lib && babel src -d lib --copy-files",
     "test": "jest",
-    "posttest": "jest --coverage",
+    "posttest": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "postversion": "npm publish",
     "postpublish": "git push && git push --tags"
   },

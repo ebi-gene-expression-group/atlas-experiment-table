@@ -3,9 +3,37 @@ import PropTypes from 'prop-types'
 import { Table } from 'evergreen-ui'
 import URI from 'urijs'
 import ReactTooltip from 'react-tooltip'
+import _ from 'lodash'
 
 import tableHeaderCells from './tableHeaderCells'
 import TooltipIcon from './TooltipIcon'
+
+async function checkInvalidFiles(endpoint, host, checkedRows) {
+  const url = URI(endpoint, host).search({accession: checkedRows}).toString()
+  try {
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`${url} => ${response.status}`)
+    }
+    return await response.json()
+  } catch (e) {
+    return {
+      error: `${e.name}: ${e.message}`,
+      loading: false
+    }
+  }
+}
+
+async function alertInvalidFiles(endpoint, host, checkedRows) {
+  const downloadUrl = URI(`experiments/download/zip`, host).search({accession: checkedRows}).toString()
+  const response = await checkInvalidFiles(endpoint, host, checkedRows)
+  const data = response.invalidFiles
+  const invalidFiles = !_.isEmpty(data) && Object.keys(data).map((experiment) => `${data[experiment].join("\n")}`)
+  return _.isEmpty(data) ?
+    window.location.replace(downloadUrl) :
+    confirm(`The following files are not available.\n${invalidFiles.join("\n")}\nAre you sure to download?`) ?
+      window.location.replace(downloadUrl) : false
+}
 
 const TableContent = ({tableHeader, searchedColumnIndex, searchQuery, orderedColumnIndex,
   ascendingOrder, enableDownload, checkedRows, currentPageData, host,
@@ -28,9 +56,11 @@ const TableContent = ({tableHeader, searchedColumnIndex, searchQuery, orderedCol
                 <div>
                   {
                     checkedRows.length > 0 ?
-                      <a href={URI(`experiments/download/zip`, host).search({accession: checkedRows}).toString()}>
-                      Download {checkedRows.length} {checkedRows.length === 1 ? `entry` : `entries`}
-                      </a> :
+
+                      <a onClick={() => alertInvalidFiles(`experiments/check/zip`, host, checkedRows)}>
+                        Download {checkedRows.length} {checkedRows.length === 1 ? `entry` : `entries`}
+                      </a>
+                      :
                       `Download`
                   }
                   <TooltipIcon tooltipText={downloadTooltip}/>

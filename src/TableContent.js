@@ -57,7 +57,7 @@ const TableContent = ({tableHeader, searchedColumnIndex, searchQuery, orderedCol
                   {
                     checkedRows.length > 0 ?
 
-                      <a onClick={() => alertInvalidFiles(`experiments/check/zip`, host, checkedRows)}>
+                      <a onClick={() => alertInvalidFiles(`json/experiments/check/zip`, host, checkedRows)}>
                         Download {checkedRows.length} {checkedRows.length === 1 ? `entry` : `entries`}
                       </a>
                       :

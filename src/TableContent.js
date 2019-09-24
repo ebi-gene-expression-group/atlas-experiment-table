@@ -8,7 +8,7 @@ import _ from 'lodash'
 import tableHeaderCells from './tableHeaderCells'
 import TooltipIcon from './TooltipIcon'
 
-async function checkInvalidFiles(endpoint, host, checkedRows) {
+const checkInvalidFiles = async (endpoint, host, checkedRows) => {
   const url = URI(endpoint, host).search({accession: checkedRows}).toString()
   try {
     const response = await fetch(url)
@@ -24,15 +24,17 @@ async function checkInvalidFiles(endpoint, host, checkedRows) {
   }
 }
 
-async function alertInvalidFiles(endpoint, host, checkedRows) {
+const alertInvalidFiles = async (endpoint, host, checkedRows) => {
   const downloadUrl = URI(`experiments/download/zip`, host).search({accession: checkedRows}).toString()
   const response = await checkInvalidFiles(endpoint, host, checkedRows)
   const data = response.invalidFiles
   const invalidFiles = !_.isEmpty(data) && Object.keys(data).map((experiment) => `${data[experiment].join("\n")}`)
-  return _.isEmpty(data) ?
-    window.location.replace(downloadUrl) :
-    confirm(`The following files are not available.\n${invalidFiles.join("\n")}\nAre you sure to download?`) ?
-      window.location.replace(downloadUrl) : false
+
+  if (_.isEmpty(data)) {
+    window.location.replace(downloadUrl)
+  } else if (window.confirm(`The following files are not available.\n${invalidFiles.join("\n")}\nAre you sure to download?`)) {
+    window.location.replace(downloadUrl)
+  }
 }
 
 const TableContent = ({tableHeader, searchedColumnIndex, searchQuery, orderedColumnIndex,
@@ -57,7 +59,7 @@ const TableContent = ({tableHeader, searchedColumnIndex, searchQuery, orderedCol
                   {
                     checkedRows.length > 0 ?
 
-                      <a onClick={() => alertInvalidFiles(`json/experiments/check/zip`, host, checkedRows)}>
+                      <a className={`downloadButton`} onClick={() => alertInvalidFiles(`json/experiments/download/zip/check`, host, checkedRows)}>
                         Download {checkedRows.length} {checkedRows.length === 1 ? `entry` : `entries`}
                       </a>
                       :
@@ -131,4 +133,4 @@ TableContent.propTypes = {
   downloadTooltip: PropTypes.string.isRequired
 }
 
-export default TableContent
+export {TableContent as default, alertInvalidFiles}

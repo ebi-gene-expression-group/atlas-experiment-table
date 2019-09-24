@@ -1,12 +1,26 @@
 import React from 'react'
+import Enzyme from 'enzyme'
 import { shallow } from 'enzyme'
 import { data } from './TestUtils'
 
 import TableContent from '../src/TableContent'
+import {alertInvalidFiles} from '../src/TableContent'
 import TooltipIcon from '../src/TooltipIcon'
+
 import { Table } from 'evergreen-ui'
+import Adapter from 'enzyme-adapter-react-16'
+
+import '@babel/polyfill'
+import fetchMock from 'fetch-mock'
+
+Enzyme.configure({ adapter: new Adapter() })
 
 describe(`TableContent`, () => {
+
+  beforeEach(() => {
+    fetchMock.restore()
+  })
+
   const props = {
     enableIndex: true,
     tableHeader: [{
@@ -28,7 +42,7 @@ describe(`TableContent`, () => {
     enableDownload: true,
     checkedRows: [`E-EHCA-2`, `E-EHCA-1`],
     currentPageData: data,
-    host: `boo`,
+    host: `http://boo`,
     entriesPerPage: 2,
     currentPage: 1,
     tableHeaderOnClick: () => {},
@@ -57,6 +71,30 @@ describe(`TableContent`, () => {
     const tooltip = wrapper.find(TooltipIcon)
     expect(wrapper).toContainExactlyOneMatchingElement(TooltipIcon)
     expect(tooltip.props().tooltipText).toEqual(props.downloadTooltip)
+  })
+
+  test(`should direct to download window without popping a confirm window if all download files are valid`, async (done) => {
+    const checkFileEndpoint = `json/experiments/download/zip/check`
+    const response = `{"invalidFiles":{}}`
+    fetchMock.get(`${props.host}/${checkFileEndpoint}?accession=${props.checkedRows[0]}&accession=${props.checkedRows[1]}`, response)
+
+    global.window.location.replace = jest.fn(() => done())
+
+    await alertInvalidFiles ("json/experiments/download/zip/check", props.host, props.checkedRows)
+
+    await expect(global.window.location.replace).toBeCalledWith(`http://boo/experiments/download/zip?accession=E-EHCA-2&accession=E-EHCA-1`)
+  })
+
+  test(`should pop a confirm window if any download files are invalid`, async (done) => {
+    const checkFileEndpoint = `json/experiments/download/zip/check`
+    const response = `{"invalidFiles":{"experiment": ["file1", "file2"]}, "ok":true}`
+    fetchMock.get(`${props.host}/${checkFileEndpoint}?accession=${props.checkedRows[0]}&accession=${props.checkedRows[1]}`, response)
+
+    global.window.confirm = jest.fn(() => done())
+
+    await alertInvalidFiles ("json/experiments/download/zip/check", props.host, props.checkedRows)
+
+    await expect(global.window.confirm).toHaveBeenCalled()
   })
 
 })

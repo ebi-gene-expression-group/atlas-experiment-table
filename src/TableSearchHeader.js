@@ -1,17 +1,31 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const TableSearchHeader = ({kingdomOptions, entriesPerPageOptions, totalNumberOfRows, searchAllOnChange, numberOfEntriesPerPageOnChange, kingdomOnChange}) =>
+const TableSearchHeader = ({kingdomOptions, projectOptions, entriesPerPageOptions, totalNumberOfRows, searchAllOnChange, numberOfEntriesPerPageOnChange, kingdomOnChange, projectOnChange}) =>
   <div className={`row expanded`}>
+    <div className={`small-12 medium-4 large-2 columns`}>
+      <label> Project:
+        <select defaultValue={``} onChange={e => projectOnChange(e)}>
+          <option value={``}>All</option>
+          {
+            projectOptions.map(project =>
+              <option key={project} value={project}>
+                {project}
+              </option>)
+          }
+        </select>
+      </label>
+    </div>
+
     <div className={`small-12 medium-4 large-2 columns`}>
       <label> Kingdom:
         <select defaultValue={``} onChange={e => kingdomOnChange(e)}>
-          <option value={``} >All</option>
+          <option value={``}>All</option>
           {
             kingdomOptions.map(kingdom =>
               <option key={kingdom} value={kingdom}>
                 {kingdom.charAt(0).toUpperCase() + kingdom.slice(1)}
-              </option>) 
+              </option>)
           }
         </select>
       </label>
@@ -40,11 +54,13 @@ const TableSearchHeader = ({kingdomOptions, entriesPerPageOptions, totalNumberOf
 
 TableSearchHeader.propTypes = {
   kingdomOptions: PropTypes.arrayOf(PropTypes.string).isRequired,
+  projectOptions: PropTypes.arrayOf(PropTypes.string).isRequired,
   entriesPerPageOptions: PropTypes.array.isRequired,
   totalNumberOfRows: PropTypes.number.isRequired,
   searchAllOnChange: PropTypes.func.isRequired,
   numberOfEntriesPerPageOnChange: PropTypes.func.isRequired,
-  kingdomOnChange: PropTypes.func.isRequired
+  kingdomOnChange: PropTypes.func.isRequired,
+  projectOnChange: PropTypes.func.isRequired
 }
 
 export default TableSearchHeader

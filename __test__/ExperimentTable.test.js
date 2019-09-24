@@ -1,11 +1,11 @@
 import React from 'react'
-import { shallow, mount } from 'enzyme'
-import { getRandomInt, TableCellDiv, data, tableHeader } from './TestUtils'
+import {shallow, mount} from 'enzyme'
+import {getRandomInt, TableCellDiv, data, tableHeader} from './TestUtils'
 import ExperimentTable from '../src/ExperimentTable'
 import TableFooter from '../src/TableFooter'
 import TableContent from '../src/TableContent'
 import TableSearchHeader from '../src/TableSearchHeader'
-import { Table } from 'evergreen-ui'
+import {Table} from 'evergreen-ui'
 import _ from 'lodash'
 
 describe(`ExperimentTable`, () => {
@@ -29,8 +29,8 @@ describe(`ExperimentTable`, () => {
 
 
   test(`should sort table content and change header text icon`, () => {
-    const randomColumnIndex =  getRandomInt(1, tableHeader.length)
-    props.tableHeader[randomColumnIndex].type=`sort`
+    const randomColumnIndex = getRandomInt(1, tableHeader.length)
+    props.tableHeader[randomColumnIndex].type = `sort`
     const wrapper = mount(<ExperimentTable {...props}/>)
 
     expect(wrapper).toContainExactlyOneMatchingElement(`.icon.icon-common.icon-sort-down`)
@@ -48,17 +48,27 @@ describe(`ExperimentTable`, () => {
   test(`should filter based on kingdom selection`, () => {
     const event = {target: {name: `pollName`, value: `animals`}}
     const wrapper = mount(<ExperimentTable {...props}/>)
-    const kingdomSelect = wrapper.find(`select`).first().at(0)
+    const kingdomSelect = wrapper.find(`select`).at(1)
     kingdomSelect.simulate(`change`, event)
 
     expect(wrapper.state(`selectedKingdom`)).toEqual(`animals`)
     expect(wrapper.find(Table.Row).length).toBeLessThanOrEqual(data.length)
   })
 
+  test(`should filter based on project selection`, () => {
+    const event = {target: {name: `pollName`, value: `HCA`}}
+    const wrapper = mount(<ExperimentTable {...props}/>)
+    const projectSelect = wrapper.find(`select`).first().at(0)
+    projectSelect.simulate(`change`, event)
+
+    expect(wrapper.state(`selectedProject`)).toEqual(`HCA`)
+    expect(wrapper.find(Table.Row).length).toBeLessThanOrEqual(data.length)
+  })
+
   test(`should filter based on numbers of entries per page selection`, () => {
     const event = {target: {name: `pollName`, value: 1}}
     const wrapper = mount(<ExperimentTable {...props}/>)
-    const entriesSelect = wrapper.find(`select`).at(1)
+    const entriesSelect = wrapper.find(`select`).at(2)
     entriesSelect.simulate(`change`, event)
 
     expect(wrapper.state(`entriesPerPage`)).toEqual(1)
@@ -79,7 +89,7 @@ describe(`ExperimentTable`, () => {
   test(`should filter based on table header search`, () => {
     const randomValue = `si`
     const randomColumn = getRandomInt(1, tableHeader.length)
-    props.tableHeader[randomColumn].type=`search`
+    props.tableHeader[randomColumn].type = `search`
 
     const wrapper = mount(<ExperimentTable {...props}/>)
     expect(wrapper.find(`.searchheader${randomColumn}`)).toExist()

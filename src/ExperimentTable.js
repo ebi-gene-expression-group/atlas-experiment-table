@@ -20,13 +20,15 @@ class ExperimentTable extends React.Component {
       currentPage: 1,
       entriesPerPage: this.entriesPerPageOptions[0],
       selectedSearch: ``,
-      selectedKingdom: ``
+      selectedKingdom: ``,
+      selectedProject: ``
     }
 
     this.sort = this.sort.bind(this)
     this.filter = this.filter.bind(this)
 
     this.kingdomOnChange = this.kingdomOnChange.bind(this)
+    this.projectOnChange = this.projectOnChange.bind(this)
     this.searchAllOnChange = this.searchAllOnChange.bind(this)
     this.numberOfEntriesPerPageOnChange = this.numberOfEntriesPerPageOnChange.bind(this)
 
@@ -45,7 +47,7 @@ class ExperimentTable extends React.Component {
     const sortedAscendingElements = propKey === `lastUpdate` ?
       _.sortBy(data, (o) => reverseDateRepresentation(o[propKey])) :
       _.sortBy(data, propKey)
-    return ascendingOrder ? sortedAscendingElements :  sortedAscendingElements.reverse()
+    return ascendingOrder ? sortedAscendingElements : sortedAscendingElements.reverse()
   }
 
   filter(data, tableHeader) {
@@ -75,6 +77,13 @@ class ExperimentTable extends React.Component {
     })
   }
 
+  projectOnChange(e) {
+    this.setState({
+      selectedProject: e.target.value,
+      currentPage: 1
+    })
+  }
+
   searchAllOnChange(e) {
     this.setState({
       selectedSearch: e.target.value.toLowerCase(),
@@ -92,7 +101,8 @@ class ExperimentTable extends React.Component {
   tableHeaderOnClick(columnNumber) {
     this.setState({
       orderedColumnIndex: columnNumber,
-      ascendingOrder: !this.state.ascendingOrder})
+      ascendingOrder: !this.state.ascendingOrder
+    })
   }
 
   tableHeaderOnChange(value, columnNumber) {
@@ -103,33 +113,46 @@ class ExperimentTable extends React.Component {
   }
 
   render() {
-    const { searchQuery, searchedColumnIndex, selectedSearch, selectedKingdom, checkedRows } = this.state
-    const { orderedColumnIndex, ascendingOrder } = this.state
-    const { entriesPerPage, currentPage } = this.state
-    const { host, aaData, tableHeader, enableDownload, downloadTooltip } = this.props
+    const {searchQuery, searchedColumnIndex, selectedSearch, selectedKingdom, selectedProject, checkedRows} = this.state
+    const {orderedColumnIndex, ascendingOrder} = this.state
+    const {entriesPerPage, currentPage} = this.state
+    const {host, aaData, tableHeader, enableDownload, downloadTooltip} = this.props
 
     const displayedFields = tableHeader.map(header => header.dataParam)
 
-    const dataArray = selectedSearch.trim() ?
+    const kingdomFilteredExperiments = this.filter(this.sort(aaData), tableHeader)
+      .filter(data => selectedKingdom ? data.kingdom === selectedKingdom : true)
 
-      this.sort(aaData).filter(data => data &&
-        Object.keys(data).map(key => displayedFields.includes(key) ? data[key] : null)
-          .some(value => value && value.toString().toLowerCase().includes(selectedSearch))) :
-      this.filter(this.sort(aaData), tableHeader)
-        .filter(data => selectedKingdom ? data.kingdom === selectedKingdom : true)
+    const projectFilteredExperiments = this.filter(this.sort(aaData), tableHeader)
+      .filter(data => selectedProject ? data.experimentProjects.includes(selectedProject) : true)
+
+    const selectedSearchFilteredExperiments = this.sort(aaData).filter(data => data &&
+      Object.keys(data).map(key => displayedFields.includes(key) ? data[key] : null)
+        .some(value => value && value.toString().toLowerCase().includes(selectedSearch)))
+
+    const dataArray = selectedSearch.trim() ?
+      _.intersection(selectedSearchFilteredExperiments, kingdomFilteredExperiments, projectFilteredExperiments) :
+      _.intersection(kingdomFilteredExperiments, projectFilteredExperiments)
 
     const currentPageData = entriesPerPage ?
       dataArray.slice(entriesPerPage * (currentPage - 1), entriesPerPage * currentPage) : dataArray
-    const kingdomOptions = [...new Set(aaData.map(data => data.kingdom ))]
+    const kingdomOptions = [...new Set(aaData.map(data => data.kingdom))]
+
+    const projectOptions = _.uniq(_.flatMap(aaData.map(
+      data => data.experimentProjects, (options) => options
+    )))
+
     return (
       <div className={`row expanded`}>
         <TableSearchHeader
           kingdomOptions={kingdomOptions}
+          projectOptions={projectOptions}
           totalNumberOfRows={aaData.length}
           entriesPerPageOptions={this.entriesPerPageOptions}
           searchAllOnChange={this.searchAllOnChange}
           numberOfEntriesPerPageOnChange={this.numberOfEntriesPerPageOnChange}
-          kingdomOnChange={this.kingdomOnChange}/>
+          kingdomOnChange={this.kingdomOnChange}
+          projectOnChange={this.projectOnChange}/>
 
         <TableContent
           {...{
@@ -158,7 +181,7 @@ class ExperimentTable extends React.Component {
           }}
           currentPageDataLength={currentPageData.length}
           dataArrayLength={dataArray.length}
-          dataLength={aaData.length} 
+          dataLength={aaData.length}
           onChange={i => this.setState({currentPage: i})}/>
       </div>
     )

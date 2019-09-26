@@ -139,7 +139,7 @@ TableContent.propTypes = {
   tableHeaderOnClick: PropTypes.func.isRequired,
   tableHeaderOnChange: PropTypes.func.isRequired,
   downloadOnChange: PropTypes.func.isRequired,
-  downloadTooltip: PropTypes.string.isRequired
+  downloadTooltip: PropTypes.string
 }
 
 export {TableContent as default, alertInvalidFiles}

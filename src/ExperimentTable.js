@@ -113,10 +113,10 @@ class ExperimentTable extends React.Component {
   }
 
   render() {
-    const {searchQuery, searchedColumnIndex, selectedSearch, selectedKingdom, selectedProject, checkedRows} = this.state
-    const {orderedColumnIndex, ascendingOrder} = this.state
-    const {entriesPerPage, currentPage} = this.state
-    const {host, aaData, tableHeader, enableDownload, downloadTooltip} = this.props
+    const { searchQuery, searchedColumnIndex, selectedSearch, selectedKingdom, selectedProject, checkedRows } = this.state
+    const { orderedColumnIndex, ascendingOrder } = this.state
+    const { entriesPerPage, currentPage } = this.state
+    const { host, aaData, tableHeader, enableDownload, downloadTooltip } = this.props
 
     const displayedFields = tableHeader.map(header => header.dataParam)
 

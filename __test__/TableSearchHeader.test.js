@@ -5,13 +5,22 @@ import TableSearchHeader from '../src/TableSearchHeader'
 
 describe(`TableSearchHeader`, () => {
   const props = {
-    kingdomOptions: [`hello`, `bonjour`],
-    projectOptions: [`hello`, `salam`],
+    dropdownFilters: [
+      {
+        label: `Kingdom`,
+        options: [`hello`, `foo`],
+        onChange: () => {}
+      },
+      {
+        label: `Project`,
+        options: [`john`, `doe`],
+        onChange: () => {}
+      }
+    ],
     entriesPerPageOptions: [1, 4, 5, 100],
     aaData: data,
     searchAllOnChange: () => {},
     numberOfEntriesPerPageOnChange: () => {},
-    kingdomOnChange: () => {},
     totalNumberOfRows: 2,
     onChange: (value, column)=>{console.log(value, column)}
   }

@@ -136,23 +136,34 @@ class ExperimentTable extends React.Component {
 
     const currentPageData = entriesPerPage ?
       dataArray.slice(entriesPerPage * (currentPage - 1), entriesPerPage * currentPage) : dataArray
+
     const kingdomOptions = [...new Set(aaData.map(data => data.kingdom))]
 
     const projectOptions = _.uniq(_.flatMap(aaData.map(
       data => data.experimentProjects, (options) => options
     )))
 
+    const dropdownFilers = [
+      {
+        label: `Kingdom`,
+        options: kingdomOptions,
+        onChange: this.kingdomOnChange
+      },
+      {
+        label: `Project`,
+        options: projectOptions,
+        onChange: this.projectOnChange
+      }
+    ]
+
     return (
       <div className={`row expanded`}>
         <TableSearchHeader
-          kingdomOptions={kingdomOptions}
-          projectOptions={projectOptions}
+          dropdownFilters={dropdownFilers}
           totalNumberOfRows={aaData.length}
           entriesPerPageOptions={this.entriesPerPageOptions}
           searchAllOnChange={this.searchAllOnChange}
-          numberOfEntriesPerPageOnChange={this.numberOfEntriesPerPageOnChange}
-          kingdomOnChange={this.kingdomOnChange}
-          projectOnChange={this.projectOnChange}/>
+          numberOfEntriesPerPageOnChange={this.numberOfEntriesPerPageOnChange}/>
 
         <TableContent
           {...{

@@ -48,7 +48,7 @@ describe(`ExperimentTable`, () => {
   test(`should filter based on kingdom selection`, () => {
     const event = {target: {name: `pollName`, value: `animals`}}
     const wrapper = mount(<ExperimentTable {...props}/>)
-    const kingdomSelect = wrapper.find(`select`).at(1)
+    const kingdomSelect = wrapper.find(`select`).first().at(0)
     kingdomSelect.simulate(`change`, event)
 
     expect(wrapper.state(`selectedKingdom`)).toEqual(`animals`)
@@ -56,12 +56,12 @@ describe(`ExperimentTable`, () => {
   })
 
   test(`should filter based on project selection`, () => {
-    const event = {target: {name: `pollName`, value: `HCA`}}
+    const event = {target: {name: `pollName`, value: `Human Cell Atlas`}}
     const wrapper = mount(<ExperimentTable {...props}/>)
-    const projectSelect = wrapper.find(`select`).first().at(0)
+    const projectSelect = wrapper.find(`select`).at(1)
     projectSelect.simulate(`change`, event)
 
-    expect(wrapper.state(`selectedProject`)).toEqual(`HCA`)
+    expect(wrapper.state(`selectedProject`)).toEqual(`Human Cell Atlas`)
     expect(wrapper.find(Table.Row).length).toBeLessThanOrEqual(data.length)
   })
 

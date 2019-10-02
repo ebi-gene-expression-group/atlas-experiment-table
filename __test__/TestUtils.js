@@ -32,7 +32,7 @@ const data = [
     species: `Mus musculus`,
     kingdom: `animals`,
     experimentalFactors: [`single cell identifier`, `sampling site`,`time`],
-    experimentProjects: [`HCA`]
+    experimentProjects: [`Human Cell Atlas`]
   },
   {
     experimentType: `DOUBLE`,
@@ -56,7 +56,7 @@ const data = [
     species: `Homo sapiens`,
     kingdom: `plants`,
     experimentalFactors: [`single cell identifier`, `disease`],
-    experimentProjects: [`HCA`, `CZ-Biohub`]
+    experimentProjects: [`Human Cell Atlas`, `Chan-Zuckerberg Biohub`]
   }
 ]
 

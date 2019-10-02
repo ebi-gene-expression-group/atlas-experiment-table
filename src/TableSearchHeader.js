@@ -1,36 +1,25 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const TableSearchHeader = ({kingdomOptions, projectOptions, entriesPerPageOptions, totalNumberOfRows, searchAllOnChange, numberOfEntriesPerPageOnChange, kingdomOnChange, projectOnChange}) =>
+const TableSearchHeader = ({dropdownFilters, entriesPerPageOptions, totalNumberOfRows, searchAllOnChange, numberOfEntriesPerPageOnChange}) =>
   <div className={`row expanded`}>
-    <div className={`small-12 medium-4 large-2 columns`}>
-      <label> Project:
-        <select defaultValue={``} onChange={e => projectOnChange(e)}>
-          <option value={``}>All</option>
-          {
-            projectOptions.map(project =>
-              <option key={project} value={project}>
-                {project}
-              </option>)
-          }
-        </select>
-      </label>
-    </div>
-
-    <div className={`small-12 medium-4 large-2 columns`}>
-      <label> Kingdom:
-        <select defaultValue={``} onChange={e => kingdomOnChange(e)}>
-          <option value={``}>All</option>
-          {
-            kingdomOptions.map(kingdom =>
-              <option key={kingdom} value={kingdom}>
-                {kingdom.charAt(0).toUpperCase() + kingdom.slice(1)}
-              </option>)
-          }
-        </select>
-      </label>
-    </div>
-
+    {
+      dropdownFilters.map((dropdownFilter) => {
+        return (<div key={dropdownFilter.label} className={`small-12 medium-4 large-2 columns`}>
+          <label> {dropdownFilter.label}:
+            <select defaultValue={``} onChange={e => dropdownFilter.onChange(e)}>
+              <option value={``}>All</option>
+              {
+                dropdownFilter.options.map(option =>
+                  <option key={option} value={option}>
+                    {option.charAt(0).toUpperCase() + option.slice(1)}
+                  </option>)
+              }
+            </select>
+          </label>
+        </div>)
+      })
+    }
     <div className={`small-12 medium-4 large-2 columns`}>
       <label>Entries per page:
         <select defaultValue={entriesPerPageOptions[0]} onChange={e => numberOfEntriesPerPageOnChange(e)}>
@@ -51,16 +40,18 @@ const TableSearchHeader = ({kingdomOptions, projectOptions, entriesPerPageOption
     </div>
   </div>
 
-
 TableSearchHeader.propTypes = {
-  kingdomOptions: PropTypes.arrayOf(PropTypes.string).isRequired,
-  projectOptions: PropTypes.arrayOf(PropTypes.string).isRequired,
   entriesPerPageOptions: PropTypes.array.isRequired,
   totalNumberOfRows: PropTypes.number.isRequired,
   searchAllOnChange: PropTypes.func.isRequired,
   numberOfEntriesPerPageOnChange: PropTypes.func.isRequired,
-  kingdomOnChange: PropTypes.func.isRequired,
-  projectOnChange: PropTypes.func.isRequired
+  dropdownFilters: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      options: PropTypes.arrayOf(PropTypes.string).isRequired,
+      onChange: PropTypes.func.isRequired
+    })
+  ).isRequired
 }
 
 export default TableSearchHeader

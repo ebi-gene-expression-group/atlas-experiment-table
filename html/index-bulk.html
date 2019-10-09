@@ -23,8 +23,14 @@
 <!-- Set to http://localhost:8080/gxa/ or http://localhost:8080/gxa_sc/ -- Remember the trailing slash! -->
 <script>
   experimentTable.render({
-    host: 'http://www.ebi.ac.uk/',
+    host: 'http://localhost:8080/gxa/',
     resource: 'gxa/json/experiments',
+    downloadTooltip: `<ul>
+          <li>Raw filtered count matrix after quantification</li>
+          <li>Normalised filtered count matrix after quantification</li>
+          <li>TPM (transcripts per million RNA molecules - only available for SmartSeq)</li>
+          <li>SDRF file with the experimental design metadata</li>
+        </ul>`,
     //link to `${host}/${header.resource}/${data[header.link]}/${header.endpoint}`
       species: ``,
      downloadTooltip: `<ul>
@@ -81,7 +87,7 @@
             //{ title: `Download`, width: null,  dataParam: null}
         ],
     noResultsMessageFormatter: function(data) { return 'Your search yielded no results: ' + data.reason },
-    enableDownload: false,
+    enableDownload: true,
     aaData:[
       {
           "experimentType":"RNASEQ_MRNA_BASELINE",

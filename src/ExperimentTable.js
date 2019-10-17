@@ -63,7 +63,7 @@ class ExperimentTable extends React.Component {
   _isContains(data, value) {
     let contains = false
     Object.keys(data).some(key => {
-      contains = typeof data[key] === `object` ? _isContains(data[key], value) : data[key] === value
+      contains = typeof data[key] === `object` ? this._isContains(data[key], value) : data[key] === value
       return contains
     })
     return contains

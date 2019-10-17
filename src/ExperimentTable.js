@@ -20,15 +20,13 @@ class ExperimentTable extends React.Component {
       currentPage: 1,
       entriesPerPage: this.entriesPerPageOptions[0],
       selectedSearch: ``,
-      selectedKingdom: ``,
-      selectedProject: ``
+      selectedDropdownFilters: []
     }
 
     this.sort = this.sort.bind(this)
     this.filter = this.filter.bind(this)
-
-    this.kingdomOnChange = this.kingdomOnChange.bind(this)
-    this.projectOnChange = this.projectOnChange.bind(this)
+    this._isContains = this._isContains.bind(this)
+    this.dropdownFilterOnChange = this.dropdownFilterOnChange.bind(this)
     this.searchAllOnChange = this.searchAllOnChange.bind(this)
     this.numberOfEntriesPerPageOnChange = this.numberOfEntriesPerPageOnChange.bind(this)
 
@@ -62,6 +60,15 @@ class ExperimentTable extends React.Component {
       )
   }
 
+  _isContains(data, value) {
+    let contains = false
+    Object.keys(data).some(key => {
+      contains = typeof data[key] === `object` ? _isContains(data[key], value) : data[key] === value
+      return contains
+    })
+    return contains
+  }
+
   handleCheckbox(accession) {
     const checkedArray = this.state.checkedRows.includes(accession) ?
       this.state.checkedRows.filter(e => e !== accession) :
@@ -70,18 +77,27 @@ class ExperimentTable extends React.Component {
     this.setState({checkedRows: checkedArray})
   }
 
-  kingdomOnChange(e) {
-    this.setState({
-      selectedKingdom: e.target.value,
-      currentPage: 1
-    })
-  }
-
-  projectOnChange(e) {
-    this.setState({
-      selectedProject: e.target.value,
-      currentPage: 1
-    })
+  dropdownFilterOnChange(e, label) {
+    const selectedDropdown = {
+      label: label,
+      value: e.target.value
+    }
+    const currentDropdownFilters = this.state.selectedDropdownFilters
+    const index = this.state.selectedDropdownFilters.findIndex(dropdown => dropdown.label === label)
+    if(index !== -1) {
+      selectedDropdown.value !== `` ?
+        currentDropdownFilters[index].value = e.target.value : currentDropdownFilters.splice(index,1)
+      this.setState({
+        selectedDropdownFilters: currentDropdownFilters,
+        currentPage: 1
+      })
+    } else {
+      currentDropdownFilters.push(selectedDropdown)
+      this.setState({
+        selectedDropdownFilters: currentDropdownFilters,
+        currentPage: 1
+      })
+    }
   }
 
   searchAllOnChange(e) {
@@ -113,57 +129,41 @@ class ExperimentTable extends React.Component {
   }
 
   render() {
-    const { searchQuery, searchedColumnIndex, selectedSearch, selectedKingdom, selectedProject, checkedRows } = this.state
+    const { searchQuery, searchedColumnIndex, selectedSearch, selectedDropdownFilters, checkedRows } = this.state
     const { orderedColumnIndex, ascendingOrder } = this.state
     const { entriesPerPage, currentPage } = this.state
-    const { host, aaData, tableHeader, enableDownload, downloadTooltip } = this.props
+    const { host, aaData, tableHeader, enableDownload, downloadTooltip, dropdownFilters } = this.props
 
     const displayedFields = tableHeader.map(header => header.dataParam)
-
-    const kingdomFilteredExperiments = this.filter(this.sort(aaData), tableHeader)
-      .filter(data => selectedKingdom ? data.kingdom === selectedKingdom : true)
-
-    const projectFilteredExperiments = this.filter(this.sort(aaData), tableHeader)
-      .filter(data => selectedProject ? data.experimentProjects.includes(selectedProject) : true)
 
     const selectedSearchFilteredExperiments = this.sort(aaData).filter(data => data &&
       Object.keys(data).map(key => displayedFields.includes(key) ? data[key] : null)
         .some(value => value && value.toString().toLowerCase().includes(selectedSearch)))
 
+    const dropdownFilteredExperiments = selectedDropdownFilters.length === 0 ?
+      this.filter(this.sort(aaData), tableHeader) :
+      this.filter(this.sort(aaData), tableHeader).filter(data => {
+        return selectedDropdownFilters.every(filter => {
+          return filter ? this._isContains(data, filter.value) : true
+        })
+      })
+
     const dataArray = selectedSearch.trim() ?
-      _.intersection(selectedSearchFilteredExperiments, kingdomFilteredExperiments, projectFilteredExperiments) :
-      _.intersection(kingdomFilteredExperiments, projectFilteredExperiments)
+      _.intersection(selectedSearchFilteredExperiments, dropdownFilteredExperiments) :
+      dropdownFilteredExperiments
 
     const currentPageData = entriesPerPage ?
       dataArray.slice(entriesPerPage * (currentPage - 1), entriesPerPage * currentPage) : dataArray
 
-    const kingdomOptions = [...new Set(aaData.map(data => data.kingdom))]
-
-    const projectOptions = _.uniq(_.flatMap(aaData.map(
-      data => data.experimentProjects, (options) => options
-    )))
-
-    const dropdownFilers = [
-      {
-        label: `Kingdom`,
-        options: kingdomOptions,
-        onChange: this.kingdomOnChange
-      },
-      {
-        label: `Project`,
-        options: projectOptions,
-        onChange: this.projectOnChange
-      }
-    ]
-
     return (
       <div className={`row expanded`}>
         <TableSearchHeader
-          dropdownFilters={dropdownFilers}
+          dropdownFilters={dropdownFilters}
           totalNumberOfRows={aaData.length}
           entriesPerPageOptions={this.entriesPerPageOptions}
           searchAllOnChange={this.searchAllOnChange}
-          numberOfEntriesPerPageOnChange={this.numberOfEntriesPerPageOnChange}/>
+          numberOfEntriesPerPageOnChange={this.numberOfEntriesPerPageOnChange}
+          dropdownFiltersOnChange={this.dropdownFilterOnChange}/>
 
         <TableContent
           {...{
@@ -213,7 +213,13 @@ ExperimentTable.propTypes = {
     })
   ),
   enableDownload: PropTypes.bool.isRequired,
-  downloadTooltip: PropTypes.string.isRequired
+  downloadTooltip: PropTypes.string.isRequired,
+  dropdownFilters: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      options: PropTypes.arrayOf(PropTypes.string).isRequired
+    }).isRequired
+  )
 }
 
 ExperimentTable.defaultProps = {

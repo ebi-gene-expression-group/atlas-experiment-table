@@ -38,6 +38,16 @@
           <li>TPM (transcripts per million RNA molecules - only available for SmartSeq)</li>
           <li>SDRF file with the experimental design metadata</li>
         </ul>`,
+    dropdownFilters: [
+      {
+        label: `kingdom`,
+        options: [`animals`, `fungi`, `plants`]
+      },
+      {
+        label: `experimentProjects`,
+        options: [`Human Cell Atlas`, `Chan-Zuckerberg Biohub`, `Malaria Cell Atlas`]
+      }
+    ],
     tableHeader:
       [
         //{title: `index`, width: 60, dataParam: null, link: null},

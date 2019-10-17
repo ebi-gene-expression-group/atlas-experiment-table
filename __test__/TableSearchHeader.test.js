@@ -7,14 +7,12 @@ describe(`TableSearchHeader`, () => {
   const props = {
     dropdownFilters: [
       {
-        label: `Kingdom`,
-        options: [`hello`, `foo`],
-        onChange: () => {}
+        label: `kingdom`,
+        options: [`hello`, `foo`]
       },
       {
-        label: `Project`,
-        options: [`john`, `doe`],
-        onChange: () => {}
+        label: `experimentProjects`,
+        options: [`john`, `doe`]
       }
     ],
     entriesPerPageOptions: [1, 4, 5, 100],
@@ -22,7 +20,7 @@ describe(`TableSearchHeader`, () => {
     searchAllOnChange: () => {},
     numberOfEntriesPerPageOnChange: () => {},
     totalNumberOfRows: 2,
-    onChange: (value, column)=>{console.log(value, column)}
+    dropdownFiltersOnChange: (value, column)=>{console.log(value, column)}
   }
 
   test(`should render three dropdown menues and a search box`, () => {

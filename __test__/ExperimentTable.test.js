@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow, mount } from 'enzyme'
-import { getRandomInt, TableCellDiv, data, tableHeader } from './TestUtils'
+import { getRandomInt, TableCellDiv, data, tableHeader, dropdownFilters } from './TestUtils'
 import ExperimentTable from '../src/ExperimentTable'
 import TableFooter from '../src/TableFooter'
 import TableContent from '../src/TableContent'
@@ -12,6 +12,7 @@ describe(`ExperimentTable`, () => {
   const props = {
     aaData: data,
     tableHeader: tableHeader,
+    dropdownFilters: dropdownFilters,
     host: `fool`,
     resource: `bool`,
     enableDownload: true,
@@ -48,10 +49,10 @@ describe(`ExperimentTable`, () => {
   test(`should filter based on kingdom selection`, () => {
     const event = {target: {name: `pollName`, value: `animals`}}
     const wrapper = mount(<ExperimentTable {...props}/>)
-    const kingdomSelect = wrapper.find(`select`).first().at(0)
+    const kingdomSelect = wrapper.find(`select`).at(0)
     kingdomSelect.simulate(`change`, event)
 
-    expect(wrapper.state(`selectedKingdom`)).toEqual(`animals`)
+    expect(wrapper.state(`selectedDropdownFilters`).some(filter => filter.value === `animals`)).toEqual(true)
     expect(wrapper.find(Table.Row).length).toBeLessThanOrEqual(data.length)
   })
 
@@ -61,7 +62,7 @@ describe(`ExperimentTable`, () => {
     const projectSelect = wrapper.find(`select`).at(1)
     projectSelect.simulate(`change`, event)
 
-    expect(wrapper.state(`selectedProject`)).toEqual(`Human Cell Atlas`)
+    expect(wrapper.state(`selectedDropdownFilters`).some(filter => filter.value === `Human Cell Atlas`)).toEqual(true)
     expect(wrapper.find(Table.Row).length).toBeLessThanOrEqual(data.length)
   })
 

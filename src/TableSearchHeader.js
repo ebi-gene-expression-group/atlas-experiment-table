@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const TableSearchHeader = ({dropdownFilters, entriesPerPageOptions, totalNumberOfRows, searchAllOnChange, numberOfEntriesPerPageOnChange}) =>
+const TableSearchHeader = ({dropdownFilters, entriesPerPageOptions, totalNumberOfRows, searchAllOnChange, numberOfEntriesPerPageOnChange, dropdownFiltersOnChange}) =>
   <div className={`row expanded`}>
     {
       dropdownFilters.map((dropdownFilter) => {
         return (<div key={dropdownFilter.label} className={`small-12 medium-4 large-2 columns`}>
           <label> {dropdownFilter.label}:
-            <select defaultValue={``} onChange={e => dropdownFilter.onChange(e)}>
+            <select defaultValue={``} onChange={e => dropdownFiltersOnChange(e, dropdownFilter.label)}>
               <option value={``}>All</option>
               {
                 dropdownFilter.options.map(option =>
@@ -49,9 +49,9 @@ TableSearchHeader.propTypes = {
     PropTypes.shape({
       label: PropTypes.string.isRequired,
       options: PropTypes.arrayOf(PropTypes.string).isRequired,
-      onChange: PropTypes.func.isRequired
     })
-  ).isRequired
+  ).isRequired,
+  dropdownFiltersOnChange: PropTypes.func.isRequired
 }
 
 export default TableSearchHeader

@@ -132,9 +132,34 @@ class ExperimentTable extends React.Component {
     const { searchQuery, searchedColumnIndex, selectedSearch, selectedDropdownFilters, checkedRows } = this.state
     const { orderedColumnIndex, ascendingOrder } = this.state
     const { entriesPerPage, currentPage } = this.state
-    const { host, aaData, tableHeader, enableDownload, downloadTooltip, dropdownFilters } = this.props
+    const { host, aaData, tableHeader, enableDownload, downloadTooltip, tableFilters } = this.props
 
     const displayedFields = tableHeader.map(header => header.dataParam)
+    let experimentTableFilters=[]
+
+    tableFilters.map(
+      dropdown => {
+        const obj = {
+          label: ``,
+          options: []
+        }
+        obj.label = dropdown.label
+        aaData.filter(
+          data => Object.keys(data).map(
+            key => {
+              key === dropdown.dataParam ?
+                Array.isArray(data[key]) ?
+                  data[key].map(value =>
+                    !obj.options.includes(value) ?
+                      obj.options.push(value) : true) :
+                  !obj.options.includes((data[key])) ? obj.options.push(data[key]) : true : true
+              let index = experimentTableFilters.findIndex(label => label === dropdown.dataParam)
+              index !== -1 ?
+                experimentTableFilters[index].options = obj.options : experimentTableFilters.push(obj)
+            }))
+      })
+
+    experimentTableFilters = _.uniq(experimentTableFilters, filter => filter.options)
 
     const selectedSearchFilteredExperiments = this.sort(aaData).filter(data => data &&
       Object.keys(data).map(key => displayedFields.includes(key) ? data[key] : null)
@@ -158,7 +183,7 @@ class ExperimentTable extends React.Component {
     return (
       <div className={`row expanded`}>
         <TableSearchHeader
-          dropdownFilters={dropdownFilters}
+          dropdownFilters={experimentTableFilters}
           totalNumberOfRows={aaData.length}
           entriesPerPageOptions={this.entriesPerPageOptions}
           searchAllOnChange={this.searchAllOnChange}
@@ -214,12 +239,12 @@ ExperimentTable.propTypes = {
   ),
   enableDownload: PropTypes.bool.isRequired,
   downloadTooltip: PropTypes.string.isRequired,
-  dropdownFilters: PropTypes.arrayOf(
+  tableFilters: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
-      options: PropTypes.arrayOf(PropTypes.string).isRequired
-    }).isRequired
-  )
+      dataParam: PropTypes.string.isRequired
+    })
+  ).isRequired
 }
 
 ExperimentTable.defaultProps = {

@@ -21,14 +21,14 @@ const tableHeader = [
   { type: `sort`, title: `Number of assays`, width: 160, dataParam: `numberOfAssays`, link: `experimentAccession`, resource: `experiments`, endpoint: `Experiment Design` },
 ]
 
-const dropdownFilters = [
+const tableFilters = [
   {
-    label: `kingdom`,
-    options: [`animals`, `fungi`, `plants`]
+    label: `Kingdom`,
+    dataParam: `kingdom`
   },
   {
-    label: `experimentProjects`,
-    options: [`Human Cell Atlas`, `Chan-Zuckerberg Biohub`, `Malaria Cell Atlas`]
+    label: `Experiment Project`,
+    dataParam: `experimentProjects`
   }
 ]
 
@@ -71,4 +71,4 @@ const data = [
   }
 ]
 
-export {getRandomInt, TableCellDiv, tableHeader, data, dropdownFilters}
+export {getRandomInt, TableCellDiv, tableHeader, data, tableFilters}

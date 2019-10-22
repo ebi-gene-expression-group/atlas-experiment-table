@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow, mount } from 'enzyme'
-import { getRandomInt, TableCellDiv, data, tableHeader, dropdownFilters } from './TestUtils'
+import { getRandomInt, TableCellDiv, data, tableHeader, tableFilters } from './TestUtils'
 import ExperimentTable from '../src/ExperimentTable'
 import TableFooter from '../src/TableFooter'
 import TableContent from '../src/TableContent'
@@ -12,7 +12,7 @@ describe(`ExperimentTable`, () => {
   const props = {
     aaData: data,
     tableHeader: tableHeader,
-    dropdownFilters: dropdownFilters,
+    tableFilters: tableFilters,
     host: `fool`,
     resource: `bool`,
     enableDownload: true,

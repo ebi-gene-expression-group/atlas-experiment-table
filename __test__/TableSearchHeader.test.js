@@ -7,11 +7,11 @@ describe(`TableSearchHeader`, () => {
   const props = {
     dropdownFilters: [
       {
-        label: `kingdom`,
+        label: `Kingdom`,
         options: [`hello`, `foo`]
       },
       {
-        label: `experimentProjects`,
+        label: `Experiment Project`,
         options: [`john`, `doe`]
       }
     ],

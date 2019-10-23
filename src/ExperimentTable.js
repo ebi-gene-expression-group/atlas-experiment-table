@@ -82,8 +82,8 @@ class ExperimentTable extends React.Component {
       label: label,
       value: e.target.value
     }
-    const selectedDropdownFilters = this.state.selectedDropdownFilters
-    const index = this.state.selectedDropdownFilters.findIndex(dropdown => dropdown.label === label)
+    const {selectedDropdownFilters} = this.state
+    const index = selectedDropdownFilters.findIndex(dropdown => dropdown.label === label)
     if(index !== -1) {
       selectedDropdown.value !== `` ?
         selectedDropdownFilters[index].value = e.target.value : selectedDropdownFilters.splice(index,1)

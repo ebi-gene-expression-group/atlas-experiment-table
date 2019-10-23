@@ -155,13 +155,14 @@ class ExperimentTable extends React.Component {
         experimentTableFilters.push(dropdownFilter)
     })
 
+    const tableHeaderFilteredExperiments = this.filter(this.sort(aaData), tableHeader)
+
     const selectedSearchFilteredExperiments = this.sort(aaData).filter(data => data &&
       Object.keys(data).map(key => displayedFields.includes(key) ? data[key] : null)
         .some(value => value && value.toString().toLowerCase().includes(selectedSearch)))
 
     const dropdownFilteredExperiments = selectedDropdownFilters.length === 0 ?
-      this.filter(this.sort(aaData), tableHeader) :
-      this.filter(this.sort(aaData), tableHeader).filter(data => {
+      tableHeaderFilteredExperiments : tableHeaderFilteredExperiments.filter(data => {
         return selectedDropdownFilters.every(filter => {
           return filter ? this._isContains(data, filter.value) : true
         })

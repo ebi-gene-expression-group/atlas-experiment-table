@@ -82,20 +82,22 @@ class ExperimentTable extends React.Component {
       label: label,
       value: e.target.value
     }
-    const currentDropdownFilters = this.state.selectedDropdownFilters
+    const selectedDropdownFilters = this.state.selectedDropdownFilters
     const index = this.state.selectedDropdownFilters.findIndex(dropdown => dropdown.label === label)
     if(index !== -1) {
       selectedDropdown.value !== `` ?
-        currentDropdownFilters[index].value = e.target.value : currentDropdownFilters.splice(index,1)
+        selectedDropdownFilters[index].value = e.target.value : selectedDropdownFilters.splice(index,1)
       this.setState({
-        selectedDropdownFilters: currentDropdownFilters,
-        currentPage: 1
+        selectedDropdownFilters: selectedDropdownFilters,
+        currentPage: 1,
+        searchQuery: ``
       })
     } else {
-      currentDropdownFilters.push(selectedDropdown)
+      selectedDropdownFilters.push(selectedDropdown)
       this.setState({
-        selectedDropdownFilters: currentDropdownFilters,
-        currentPage: 1
+        selectedDropdownFilters: selectedDropdownFilters,
+        currentPage: 1,
+        searchQuery: ``
       })
     }
   }
@@ -137,29 +139,21 @@ class ExperimentTable extends React.Component {
     const displayedFields = tableHeader.map(header => header.dataParam)
     let experimentTableFilters=[]
 
-    tableFilters.map(
-      dropdown => {
-        const obj = {
-          label: ``,
-          options: []
-        }
-        obj.label = dropdown.label
-        aaData.filter(
-          data => Object.keys(data).map(
-            key => {
-              key === dropdown.dataParam ?
-                Array.isArray(data[key]) ?
-                  data[key].map(value =>
-                    !obj.options.includes(value) ?
-                      obj.options.push(value) : true) :
-                  !obj.options.includes((data[key])) ? obj.options.push(data[key]) : true : true
-              let index = experimentTableFilters.findIndex(label => label === dropdown.dataParam)
-              index !== -1 ?
-                experimentTableFilters[index].options = obj.options : experimentTableFilters.push(obj)
-            }))
-      })
-
-    experimentTableFilters = _.uniq(experimentTableFilters, filter => filter.options)
+    tableFilters.map(filter => {
+      const dropdownFilter = {
+        label: ``,
+        options: []
+      }
+      dropdownFilter.label = filter.label
+      aaData.filter(data => Object.keys(data).map(key => {
+        key === filter.dataParam ? Array.isArray(data[key]) ?
+          data[key].map(value => !dropdownFilter.options.includes(value) ? dropdownFilter.options.push(value) : true) :
+          !dropdownFilter.options.includes((data[key])) ? dropdownFilter.options.push(data[key]) : true : true
+      }))
+      let index = experimentTableFilters.findIndex(label => label === filter.dataParam)
+      index !== -1 ? experimentTableFilters[index].options = dropdownFilter.options :
+        experimentTableFilters.push(dropdownFilter)
+    })
 
     const selectedSearchFilteredExperiments = this.sort(aaData).filter(data => data &&
       Object.keys(data).map(key => displayedFields.includes(key) ? data[key] : null)

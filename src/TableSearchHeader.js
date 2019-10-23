@@ -4,8 +4,8 @@ import PropTypes from 'prop-types'
 const TableSearchHeader = ({dropdownFilters, entriesPerPageOptions, totalNumberOfRows, searchAllOnChange, numberOfEntriesPerPageOnChange, dropdownFiltersOnChange}) =>
   <div className={`row expanded`}>
     {
-      dropdownFilters.map((dropdownFilter) => {
-        return (<div key={dropdownFilter.label} className={`small-12 medium-4 large-2 columns`}>
+      dropdownFilters.map(dropdownFilter =>
+        <div key={dropdownFilter.label} className={`small-12 medium-4 large-2 columns`}>
           <label> {dropdownFilter.label}:
             <select defaultValue={``} onChange={e => dropdownFiltersOnChange(e, dropdownFilter.label)}>
               <option value={``}>All</option>
@@ -18,7 +18,6 @@ const TableSearchHeader = ({dropdownFilters, entriesPerPageOptions, totalNumberO
             </select>
           </label>
         </div>)
-      })
     }
     <div className={`small-12 medium-4 large-2 columns`}>
       <label>Entries per page:

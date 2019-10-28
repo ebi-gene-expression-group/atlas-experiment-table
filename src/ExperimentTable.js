@@ -137,22 +137,13 @@ class ExperimentTable extends React.Component {
     const { host, aaData, tableHeader, enableDownload, downloadTooltip, tableFilters } = this.props
 
     const displayedFields = tableHeader.map(header => header.dataParam)
-    let experimentTableFilters=[]
 
-    tableFilters.map(filter => {
-      const dropdownFilter = {
-        label: ``,
-        options: []
+    const experimentTableFilters = tableFilters.map(filter => {
+      return {
+        label: filter.label,
+        options: _.uniq(
+          _.flatMap(aaData.map(data => data[filter.dataParam])))
       }
-      dropdownFilter.label = filter.label
-      aaData.filter(data => Object.keys(data).map(key => {
-        key === filter.dataParam ? Array.isArray(data[key]) ?
-          data[key].map(value => !dropdownFilter.options.includes(value) ? dropdownFilter.options.push(value) : true) :
-          !dropdownFilter.options.includes((data[key])) ? dropdownFilter.options.push(data[key]) : true : true
-      }))
-      let index = experimentTableFilters.findIndex(label => label === filter.dataParam)
-      index !== -1 ? experimentTableFilters[index].options = dropdownFilter.options :
-        experimentTableFilters.push(dropdownFilter)
     })
 
     const tableHeaderFilteredExperiments = this.filter(this.sort(aaData), tableHeader)

@@ -29,6 +29,10 @@ const tableFilters = [
   {
     label: `Experiment Project`,
     dataParam: `experimentProjects`
+  },
+  {
+    label: `Technology Type`,
+    dataParam: `technologyType`
   }
 ]
 
@@ -43,7 +47,8 @@ const data = [
     species: `Mus musculus`,
     kingdom: `animals`,
     experimentalFactors: [`single cell identifier`, `sampling site`,`time`],
-    experimentProjects: [`Human Cell Atlas`]
+    experimentProjects: [`Human Cell Atlas`],
+    technologyType: [`smart-seq2`]
   },
   {
     experimentType: `DOUBLE`,
@@ -55,7 +60,8 @@ const data = [
     species: `Mus musculus`,
     kingdom: `animals`,
     experimentalFactors: [`single cell identifier`],
-    experimentProjects:[]
+    experimentProjects:[],
+    technologyType: [`smart-seq2`]
   },
   {
     experimentType: `SINGLE`,
@@ -67,7 +73,8 @@ const data = [
     species: `Homo sapiens`,
     kingdom: `plants`,
     experimentalFactors: [`single cell identifier`, `disease`],
-    experimentProjects: [`Human Cell Atlas`, `Chan-Zuckerberg Biohub`]
+    experimentProjects: [`Human Cell Atlas`, `Chan-Zuckerberg Biohub`],
+    technologyType: [`smart-seq2`, `10xV1`]
   }
 ]
 

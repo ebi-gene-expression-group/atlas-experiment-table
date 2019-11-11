@@ -46,30 +46,38 @@ describe(`ExperimentTable`, () => {
     expect(wrapper).toContainExactlyOneMatchingElement(`.icon.icon-common.icon-sort-down`)
   })
 
-  test(`should filter based on kingdom selection`, () => {
+  test(`should filter based on filter value selection`, () => {
     const event = {target: {name: `pollName`, value: `animals`}}
     const wrapper = mount(<ExperimentTable {...props}/>)
-    const kingdomSelect = wrapper.find(`select`).at(0)
-    kingdomSelect.simulate(`change`, event)
+    const filterSelect = wrapper.find(`select`).at(0)
+    filterSelect.simulate(`change`, event)
 
     expect(wrapper.state(`selectedDropdownFilters`).some(filter => filter.value === `animals`)).toEqual(true)
     expect(wrapper.find(Table.Row).length).toBeLessThanOrEqual(data.length)
   })
 
-  test(`should filter based on project selection`, () => {
-    const event = {target: {name: `pollName`, value: `Human Cell Atlas`}}
+  test(`should remove filter from if no filter value selected`, () => {
+    const event = {target: {name: `pollName`, value: ``}}
     const wrapper = mount(<ExperimentTable {...props}/>)
-    const projectSelect = wrapper.find(`select`).at(1)
-    projectSelect.simulate(`change`, event)
+    const selectedFilter = {label: `Kingdom`, value: ``}
+    wrapper.state(`selectedDropdownFilters`).push(selectedFilter)
+    const filterSelect = wrapper.find(`select`).at(0)
+    filterSelect.simulate(`change`, event)
 
-    expect(wrapper.state(`selectedDropdownFilters`).some(filter => filter.value === `Human Cell Atlas`)).toEqual(true)
-    expect(wrapper.find(Table.Row).length).toBeLessThanOrEqual(data.length)
+    expect(wrapper.state(`selectedDropdownFilters`).some(filter => filter.value === `` && filter.label === `Kingdom`)).toEqual(false)
+  })
+
+  test(`should not filter if no filter selected`, () => {
+    const wrapper = mount(<ExperimentTable {...props}/>)
+
+    expect(wrapper.state(`selectedDropdownFilters`).length).toEqual(0)
+    expect(wrapper.find(Table.Row).length).toEqual(data.length)
   })
 
   test(`should filter based on numbers of entries per page selection`, () => {
     const event = {target: {name: `pollName`, value: 1}}
     const wrapper = mount(<ExperimentTable {...props}/>)
-    const entriesSelect = wrapper.find(`select`).at(2)
+    const entriesSelect = wrapper.find(`select`).at(3)
     entriesSelect.simulate(`change`, event)
 
     expect(wrapper.state(`entriesPerPage`)).toEqual(1)

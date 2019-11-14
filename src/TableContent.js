@@ -8,8 +8,8 @@ import _ from 'lodash'
 import tableHeaderCells from './tableHeaderCells'
 import TooltipIcon from './TooltipIcon'
 
-const checkInvalidFiles = async (endpoint, host, checkedRows) => {
-  const url = URI(endpoint, host).search({accession: checkedRows}).toString()
+const fetchJson = async (endpoint, host, queryParams) => {
+  const url = URI(endpoint, host).search(queryParams).toString()
   try {
     const response = await fetch(url)
     if (!response.ok) {
@@ -25,14 +25,14 @@ const checkInvalidFiles = async (endpoint, host, checkedRows) => {
 }
 
 const alertInvalidFiles = async (endpoint, host, checkedRows) => {
-  const downloadUrl = URI(`experiments/download/zip`, host).search({accession: checkedRows}).toString()
-  const response = await checkInvalidFiles(endpoint, host, checkedRows)
+  const response = await fetchJson(endpoint, host, {accession: checkedRows})
   const data = response.invalidFiles
-  const invalidFiles = !_.isEmpty(data) && Object.keys(data).map((experiment) => `${data[experiment].join("\n")}`)
+  const invalidFiles = !_.isEmpty(data) && Object.keys(data).map((experiment) => `${data[experiment].join(`\n`)}`)
 
-  if (_.isEmpty(data)) {
+  const downloadUrl = URI(`experiments/download/zip`, host).search({accession: checkedRows}).toString()
+  if (_.isEmpty(Object.values(data)[0])) {
     window.location.replace(downloadUrl)
-  } else if (window.confirm(`The following files are not available.\n${invalidFiles.join("\n")}\nAre you sure to download?`)) {
+  } else if (window.confirm(`The following files are not available.\n${invalidFiles.join(`\n`)}\nWould you like to continue?`)) {
     window.location.replace(downloadUrl)
   }
 }

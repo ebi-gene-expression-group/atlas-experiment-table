@@ -1,5 +1,4 @@
 import React from 'react'
-import Enzyme from 'enzyme'
 import { shallow } from 'enzyme'
 import { data } from './TestUtils'
 
@@ -8,12 +7,10 @@ import {alertInvalidFiles} from '../src/TableContent'
 import TooltipIcon from '../src/TooltipIcon'
 
 import { Table } from 'evergreen-ui'
-import Adapter from 'enzyme-adapter-react-16'
 
 import '@babel/polyfill'
 import fetchMock from 'fetch-mock'
 
-Enzyme.configure({ adapter: new Adapter() })
 
 describe(`TableContent`, () => {
 
@@ -92,7 +89,7 @@ describe(`TableContent`, () => {
 
     global.window.confirm = jest.fn(() => done())
 
-    await alertInvalidFiles ("json/experiments/download/zip/check", props.host, props.checkedRows)
+    await alertInvalidFiles (`json/experiments/download/zip/check`, props.host, props.checkedRows)
 
     await expect(global.window.confirm).toHaveBeenCalled()
   })

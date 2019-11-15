@@ -77,7 +77,7 @@ describe(`TableContent`, () => {
 
     global.window.location.replace = jest.fn(() => done())
 
-    await alertInvalidFiles ("json/experiments/download/zip/check", props.host, props.checkedRows)
+    await alertInvalidFiles(props.host, props.checkedRows)
 
     await expect(global.window.location.replace).toBeCalledWith(`http://boo/experiments/download/zip?accession=E-EHCA-2&accession=E-EHCA-1`)
   })
@@ -89,7 +89,7 @@ describe(`TableContent`, () => {
 
     global.window.confirm = jest.fn(() => done())
 
-    await alertInvalidFiles (`json/experiments/download/zip/check`, props.host, props.checkedRows)
+    await alertInvalidFiles(props.host, props.checkedRows)
 
     await expect(global.window.confirm).toHaveBeenCalled()
   })

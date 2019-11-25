@@ -21,6 +21,16 @@ describe(`TableContent`, () => {
   const props = {
     enableIndex: true,
     tableHeader: [{
+      type: `sort`,
+      title: `type`,
+      width: 3,
+      dataParam: `experimentType`,
+      image: {
+        SINGLE: {src: `www.foo.com`, alt: `foo`},
+        DOUBLE: {src: `www.bar.cn`, alt: `bar`}
+      }
+    },
+    {
       type: `search`,
       title: `title1`,
       width: 12,
@@ -70,6 +80,11 @@ describe(`TableContent`, () => {
     expect(tooltip.props().tooltipText).toEqual(props.downloadTooltip)
   })
 
+  test(`should display the images in the table content if the header has image field`, () => {
+    const wrapper = shallow(<TableContent {...props}/>)
+    expect(wrapper.find(`img`)).toHaveLength(props.tableHeader.length)
+  })
+
   test(`should direct to download window without popping a confirm window if all download files are valid`, async (done) => {
     const checkFileEndpoint = `json/experiments/download/zip/check`
     const response = `{"invalidFiles":{"E-EHCA-2": [], "E-EHCA-1": []}}`
@@ -92,6 +107,4 @@ describe(`TableContent`, () => {
     await alertInvalidFiles(props.host, props.checkedRows)
 
     await expect(global.window.confirm).toHaveBeenCalled()
-  })
-
-})
+  })})

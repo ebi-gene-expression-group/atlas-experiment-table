@@ -10,18 +10,8 @@ import TooltipIcon from './TooltipIcon'
 
 const fetchJson = async (endpoint, host, queryParams) => {
   const url = URI(endpoint, host).search(queryParams).toString()
-  try {
-    const response = await fetch(url)
-    if (!response.ok) {
-      throw new Error(`${url} => ${response.status}`)
-    }
-    return await response.json()
-  } catch (e) {
-    return {
-      error: `${e.name}: ${e.message}`,
-      loading: false
-    }
-  }
+  const response = await fetch(url)
+  return await response.json()
 }
 
 const alertInvalidFiles = async (host, checkedRows) => {

@@ -72,7 +72,7 @@ describe(`TableContent`, () => {
 
   test(`should direct to download window without popping a confirm window if all download files are valid`, async (done) => {
     const checkFileEndpoint = `json/experiments/download/zip/check`
-    const response = `{"invalidFiles":{}}`
+    const response = `{"invalidFiles":{"E-EHCA-2": [], "E-EHCA-1": []}}`
     fetchMock.get(`${props.host}/${checkFileEndpoint}?accession=${props.checkedRows[0]}&accession=${props.checkedRows[1]}`, response)
 
     global.window.location.replace = jest.fn(() => done())
@@ -84,7 +84,7 @@ describe(`TableContent`, () => {
 
   test(`should pop a confirm window if any download files are invalid`, async (done) => {
     const checkFileEndpoint = `json/experiments/download/zip/check`
-    const response = `{"invalidFiles":{"experiment": ["file1", "file2"]}, "ok":true}`
+    const response = `{"invalidFiles":{"E-EHCA-2": ["file1", "file2"]}, "E-EHCA-1":[]}`
     fetchMock.get(`${props.host}/${checkFileEndpoint}?accession=${props.checkedRows[0]}&accession=${props.checkedRows[1]}`, response)
 
     global.window.confirm = jest.fn(() => done())

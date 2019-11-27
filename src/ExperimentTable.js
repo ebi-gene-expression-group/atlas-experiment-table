@@ -20,12 +20,18 @@ class ExperimentTable extends React.Component {
       currentPage: 1,
       entriesPerPage: this.entriesPerPageOptions[0],
       selectedSearch: ``,
-      selectedDropdownFilters: []
+      selectedDropdownFilters: [],
+      experimentTableFilters: this.props.tableFilters.map(filter => {
+        return {
+          label: filter.label,
+          options: _.chain(this.props.aaData).flatMap(filter.dataParam).uniq().value()
+        }
+      })
     }
 
     this.sort = this.sort.bind(this)
     this.filter = this.filter.bind(this)
-    this._isContains = this._isContains.bind(this)
+    this.containsValue = this.containsValue.bind(this)
     this.dropdownFilterOnChange = this.dropdownFilterOnChange.bind(this)
     this.searchAllOnChange = this.searchAllOnChange.bind(this)
     this.numberOfEntriesPerPageOnChange = this.numberOfEntriesPerPageOnChange.bind(this)
@@ -59,14 +65,14 @@ class ExperimentTable extends React.Component {
           .includes(searchQuery.toLowerCase())
       )
   }
-
-  _isContains(data, value) {
-    let contains = false
-    Object.keys(data).some(key => {
-      contains = typeof data[key] === `object` ? this._isContains(data[key], value) : data[key] === value
-      return contains
-    })
-    return contains
+  //this function checks if value exists in json object e.g.
+  //jsonObject = {a: 1, b: 2} then containsValue(jsonObject, 1) will return true
+  //jsonObject = {a: 1, b: 2} then containsValue(jsonObject, 3) will return false
+  containsValue(jsonObject, value) {
+    return Object.keys(jsonObject).some(key =>
+      typeof jsonObject[key] === `object` ?
+        this.containsValue(jsonObject[key], value) : jsonObject[key] === value
+    )
   }
 
   handleCheckbox(accession) {
@@ -131,37 +137,25 @@ class ExperimentTable extends React.Component {
   }
 
   render() {
-    const { searchQuery, searchedColumnIndex, selectedSearch, selectedDropdownFilters, checkedRows } = this.state
+    const { searchQuery, searchedColumnIndex, selectedSearch, checkedRows } = this.state
+    const { selectedDropdownFilters, experimentTableFilters } = this.state
     const { orderedColumnIndex, ascendingOrder } = this.state
     const { entriesPerPage, currentPage } = this.state
-    const { host, aaData, tableHeader, enableDownload, downloadTooltip, tableFilters } = this.props
+    const { host, aaData, tableHeader, enableDownload, downloadTooltip } = this.props
 
     const displayedFields = tableHeader.map(header => header.dataParam)
 
-    const experimentTableFilters = tableFilters.map(filter => {
-      return {
-        label: filter.label,
-        options: _.uniq(
-          _.flatMap(aaData.map(data => data[filter.dataParam])))
-      }
-    })
-
     const tableHeaderFilteredExperiments = this.filter(this.sort(aaData), tableHeader)
 
-    const selectedSearchFilteredExperiments = this.sort(aaData).filter(data => data &&
-      Object.keys(data).map(key => displayedFields.includes(key) ? data[key] : null)
-        .some(value => value && value.toString().toLowerCase().includes(selectedSearch)))
+    const selectedSearchFilteredExperiments = _.chain(tableHeaderFilteredExperiments).filter(data =>
+      data && Object.keys(data).map(key =>
+        displayedFields.includes(key) ? data[key] : null).some(value =>
+        value && value.toString().toLowerCase().includes(selectedSearch))).value()
 
-    const dropdownFilteredExperiments = selectedDropdownFilters.length === 0 ?
-      tableHeaderFilteredExperiments : tableHeaderFilteredExperiments.filter(data => {
-        return selectedDropdownFilters.every(filter => {
-          return filter ? this._isContains(data, filter.value) : true
-        })
-      })
-
-    const dataArray = selectedSearch.trim() ?
-      _.intersection(selectedSearchFilteredExperiments, dropdownFilteredExperiments) :
-      dropdownFilteredExperiments
+    const dataArray = _.chain(selectedSearchFilteredExperiments).filter(data =>
+      selectedDropdownFilters.every(filter =>
+        filter ? this.containsValue(data, filter.value) : true
+      )).value()
 
     const currentPageData = entriesPerPage ?
       dataArray.slice(entriesPerPage * (currentPage - 1), entriesPerPage * currentPage) : dataArray

@@ -65,9 +65,22 @@ class ExperimentTable extends React.Component {
           .includes(searchQuery.toLowerCase())
       )
   }
-  //this function searches deeply if value exists in json object e.g.
-  //jsonObject = {a: 1, b: 2} then containsValue(jsonObject, 1) will return true
-  //jsonObject = {a: 1, b: 2} then containsValue(jsonObject, 3) will return false
+  /* this function searches deeply if value exists in json object e.g.
+  jsonObject = {a: 1, b: 2} then containsValue(jsonObject, 1) will return true
+  jsonObject = {a: 1, b: 2} then containsValue(jsonObject, 3) will return false
+  jsonObject = {a: [
+                 b: {
+                  c: "foo",
+                  d: [
+                    da: 1,
+                    db: 2,
+                    dc: 3
+                     ]
+                  e: "bar"
+                    }
+                   ]
+                }
+   then constainsValue(jsonObject, 2) will return true */
   containsValue(jsonObject, value) {
     return Object.keys(jsonObject).some(key =>
       typeof jsonObject[key] === `object` ?
@@ -145,16 +158,27 @@ class ExperimentTable extends React.Component {
 
     const displayedFields = tableHeader.map(header => header.dataParam)
 
-    //first we filter according to table headers
-    //then on those filtered experiments we further filter them in next step according to search box text
-    //and finally we filter the experiments filtered in previous two steps according to selected dropdowns
-    const filteredExperiments = this.filter(this.sort(aaData), tableHeader).filter(data =>
-      data && Object.keys(data).map(key =>
-        displayedFields.includes(key) ? data[key] : null).some(value =>
-        value && value.toString().toLowerCase().includes(selectedSearch))).filter(experiment =>
-      selectedDropdownFilters.every(filter =>
-        filter ? this.containsValue(experiment, filter.value) : true
-      ))
+    const filteredExperiments =
+      //first we filter experiments according to table headers
+      this.filter(this.sort(aaData), tableHeader)
+      //...then we further filter them according to search box text
+        .filter(experiment =>
+          experiment &&
+          Object
+            .keys(experiment)
+            .map(key =>
+              displayedFields.includes(key) ? experiment[key] : null)
+            .some(value =>
+              value &&
+              value
+                .toString()
+                .toLowerCase()
+                .includes(selectedSearch)))
+        //...and finally we filter according to selected dropdowns
+        .filter(experiment =>
+          selectedDropdownFilters
+            .every(filter =>
+              filter ? this.containsValue(experiment, filter.value) : true))
 
     const currentPageData = entriesPerPage ?
       filteredExperiments.slice(entriesPerPage * (currentPage - 1), entriesPerPage * currentPage) : filteredExperiments

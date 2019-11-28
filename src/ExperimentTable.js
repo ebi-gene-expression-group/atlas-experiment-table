@@ -173,7 +173,7 @@ class ExperimentTable extends React.Component {
               value
                 .toString()
                 .toLowerCase()
-                .includes(selectedSearch)))
+                .includes(selectedSearch.toLowerCase())))
         //...and finally we filter according to selected dropdowns
         .filter(experiment =>
           selectedDropdownFilters

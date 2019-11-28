@@ -14,6 +14,7 @@ const TableCellDiv = styled.div`
 `
 
 const tableHeader = [
+  {type: `sort`, title: `Technology type`, width: 240, dataParam: `technologyType`},
   { type: `sort`, title: `Loaded date`, width: 140, dataParam: `lastUpdate` },
   { type: `search`, title: `species`, width: 200, dataParam: `species` },
   { type: ``, title: `experiment description`, width: 360, dataParam: `experimentDescription`, link: `experimentAccession`, resource: `experiments`, endpoint: `Results` },

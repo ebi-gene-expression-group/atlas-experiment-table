@@ -11,20 +11,20 @@ class ExperimentTable extends React.Component {
     super(props)
     this.entriesPerPageOptions = [10, 25, 50]
     this.state = {
-      searchQuery: this.props.species.trim(),
+      searchQuery: props.species.trim(),
       orderedColumnIndex: 0,
-      searchedColumnIndex: this.props.species.trim() ?
-        this.props.tableHeader.findIndex(header => header.dataParam === `species`) : 1,
+      searchedColumnIndex: props.species.trim() ?
+        props.tableHeader.findIndex(header => header.dataParam === `species`) : 1,
       ascendingOrder: false,
       checkedRows: [],
       currentPage: 1,
       entriesPerPage: this.entriesPerPageOptions[0],
       selectedSearch: ``,
       selectedDropdownFilters: [],
-      experimentTableFilters: this.props.tableFilters.map(filter => {
+      experimentTableFilters: props.tableFilters.map(filter => {
         return {
           label: filter.label,
-          options: _.chain(this.props.aaData).flatMap(filter.dataParam).uniq().value()
+          options: _.chain(props.aaData).flatMap(filter.dataParam).uniq().value()
         }
       })
     }
@@ -65,7 +65,7 @@ class ExperimentTable extends React.Component {
           .includes(searchQuery.toLowerCase())
       )
   }
-  //this function checks if value exists in json object e.g.
+  //this function searches deeply if value exists in json object e.g.
   //jsonObject = {a: 1, b: 2} then containsValue(jsonObject, 1) will return true
   //jsonObject = {a: 1, b: 2} then containsValue(jsonObject, 3) will return false
   containsValue(jsonObject, value) {
@@ -145,20 +145,19 @@ class ExperimentTable extends React.Component {
 
     const displayedFields = tableHeader.map(header => header.dataParam)
 
-    const tableHeaderFilteredExperiments = this.filter(this.sort(aaData), tableHeader)
-
-    const selectedSearchFilteredExperiments = _.chain(tableHeaderFilteredExperiments).filter(data =>
+    //first we filter according to table headers
+    //then on those filtered experiments we further filter them in next step according to search box text
+    //and finally we filter the experiments filtered in previous two steps according to selected dropdowns
+    const filteredExperiments = this.filter(this.sort(aaData), tableHeader).filter(data =>
       data && Object.keys(data).map(key =>
         displayedFields.includes(key) ? data[key] : null).some(value =>
-        value && value.toString().toLowerCase().includes(selectedSearch))).value()
-
-    const dataArray = _.chain(selectedSearchFilteredExperiments).filter(data =>
+        value && value.toString().toLowerCase().includes(selectedSearch))).filter(experiment =>
       selectedDropdownFilters.every(filter =>
-        filter ? this.containsValue(data, filter.value) : true
-      )).value()
+        filter ? this.containsValue(experiment, filter.value) : true
+      ))
 
     const currentPageData = entriesPerPage ?
-      dataArray.slice(entriesPerPage * (currentPage - 1), entriesPerPage * currentPage) : dataArray
+      filteredExperiments.slice(entriesPerPage * (currentPage - 1), entriesPerPage * currentPage) : filteredExperiments
 
     return (
       <div className={`row expanded`}>
@@ -196,7 +195,7 @@ class ExperimentTable extends React.Component {
             entriesPerPage
           }}
           currentPageDataLength={currentPageData.length}
-          dataArrayLength={dataArray.length}
+          dataArrayLength={filteredExperiments.length}
           dataLength={aaData.length}
           onChange={i => this.setState({currentPage: i})}/>
       </div>

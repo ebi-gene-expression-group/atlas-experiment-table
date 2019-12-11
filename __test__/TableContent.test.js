@@ -107,4 +107,5 @@ describe(`TableContent`, () => {
     await alertInvalidFiles(props.host, props.checkedRows)
 
     await expect(global.window.confirm).toHaveBeenCalled()
-  })})
+  })
+})

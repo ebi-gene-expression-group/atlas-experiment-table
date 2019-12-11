@@ -159,9 +159,9 @@ class ExperimentTable extends React.Component {
     const displayedFields = tableHeader.map(header => header.dataParam)
 
     const filteredExperiments =
-      //first we filter experiments according to table headers
+      // First we filter experiments according to table headers...
       this.filter(this.sort(aaData), tableHeader)
-      //...then we further filter them according to search box text
+      // ... then we further filter them according to search box text...
         .filter(experiment =>
           experiment &&
           Object
@@ -174,7 +174,7 @@ class ExperimentTable extends React.Component {
                 .toString()
                 .toLowerCase()
                 .includes(selectedSearch.toLowerCase())))
-        //...and finally we filter according to selected dropdowns
+        // ... and finally we filter according to selected dropdowns
         .filter(experiment =>
           selectedDropdownFilters
             .every(filter =>

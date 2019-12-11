@@ -37,7 +37,7 @@ const TableContent = ({tableHeader, searchedColumnIndex, searchQuery, orderedCol
   <div className={`row expanded`}>
     <div className={`small-12 columns`} >
       <Table border>
-        <Table.Head>
+        <Table.Head style={{paddingTop: `20px`, paddingBottom: `20px`}}>
 
           {
             tableHeaderCells(tableHeader, searchedColumnIndex, searchQuery, orderedColumnIndex, ascendingOrder,
@@ -49,7 +49,7 @@ const TableContent = ({tableHeader, searchedColumnIndex, searchQuery, orderedCol
           {
             enableDownload && <Table.TextHeaderCell className={`downloadHeader`} flexBasis={100} flexShrink={100} flexGrow={100}>
               {
-                <div>
+                <div style={{display: `ruby`, fontSize: `20px`}}>
                   {
                     checkedRows.length > 0 ?
 

@@ -55,7 +55,7 @@ class ExperimentTable extends React.Component {
   }
 
   filter(data, tableHeader) {
-    const searchQuery = this.state.searchQuery.trim()
+    const searchQuery = this.state.searchQuery && this.state.searchQuery.trim()
     return searchQuery.length === 0 ? data :
       data.filter(row => Array.isArray(row[tableHeader[this.state.searchedColumnIndex].dataParam]) ?
         _.flattenDeep(row[tableHeader[this.state.searchedColumnIndex].dataParam])
@@ -142,9 +142,9 @@ class ExperimentTable extends React.Component {
     })
   }
 
-  tableHeaderOnChange(value, columnNumber) {
+  tableHeaderOnChange(e, columnNumber) {
     this.setState({
-      searchQuery: value,
+      searchQuery: e.target.value.toLowerCase(),
       searchedColumnIndex: columnNumber
     })
   }

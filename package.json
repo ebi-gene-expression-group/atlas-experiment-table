@@ -1,5 +1,5 @@
 {
-  "name": "atlas-experiment-table",
+  "name": "@ebi-gene-expression-group/atlas-experiment-table",
   "version": "1.4.0",
   "description": "This package renders an experiment table with user interaction using Evergreen package",
   "main": "lib/index.js",

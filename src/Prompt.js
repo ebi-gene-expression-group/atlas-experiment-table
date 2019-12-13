@@ -28,12 +28,14 @@ class Prompt extends React.Component {
       <div>
         <p style={{paddingBottom: `1rem`}}>Choose file types...</p>
           {
-            this.props.downloadFileTypes.map((fileType) =>
-              <div style={{display:"flex"}}>
+            this.props.downloadFileTypes.map((fileType, idx) =>
+              <div id={`filetype${idx}`} style={{display:"flex"}}>
                 <input type={`checkbox`} className={`checkbox`} id={fileType.id}
                        checked={this.state.selectedFileTypes.includes(fileType.id)}
                        onChange={() => this.onClick(fileType.id)}/>
-                <p style={{paddingLeft: `1rem`, paddingBottom: `1rem`}}>{fileType.description}</p>
+                <p id={fileType.description} style={{paddingLeft: `1rem`, paddingBottom: `1rem`}}>
+                  {fileType.description}
+                </p>
               </div>
             )
           }

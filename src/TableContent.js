@@ -17,7 +17,6 @@ const fetchJson = async (endpoint, host, queryParams) => {
 }
 
 const alertInvalidFiles = async (host, checkedRows, fileTypes) => {
-  console.log(`alert`, fileTypes)
   const endpoint = `json/experiments/download/zip/check`
 
   try {
@@ -42,7 +41,6 @@ const alertInvalidFiles = async (host, checkedRows, fileTypes) => {
 class TableContent extends React.Component {
   constructor(props) {
     super(props)
-    console.log(props)
 
     this.state = {
       fileTypes: props.enableDownload && props.downloadFileTypes.map(fileType => fileType.id)

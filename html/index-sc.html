@@ -12,6 +12,8 @@
           type="text/css" media="all"/>
     <link rel="stylesheet" href="https://www.ebi.ac.uk/gxa/sc/resources/css/theme-atlas.css" type="text/css"
           media="all">
+    <link rel="stylesheet" href="./react-popup.css" type="text/css" media="all">
+
 </head>
 
 <body>
@@ -38,6 +40,20 @@
           <li>TPM (transcripts per million RNA molecules - only available for SmartSeq)</li>
           <li>SDRF file with the experimental design metadata</li>
         </ul>`,
+    downloadFileTypes: [
+      {
+        description: `Raw quantification files`,
+        id: `quantification-raw`
+      },
+      {
+        description: `Normalised counts files`,
+        id: `normalised`
+      },
+      {
+        description: `Experiment design file`,
+        id: `experiment-design`
+      }
+    ],
     tableFilters: [
       {
         label: `Kingdom`,

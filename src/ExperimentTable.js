@@ -154,7 +154,7 @@ class ExperimentTable extends React.Component {
     const { selectedDropdownFilters, experimentTableFilters } = this.state
     const { orderedColumnIndex, ascendingOrder } = this.state
     const { entriesPerPage, currentPage } = this.state
-    const { host, experiments, tableHeader, enableDownload, downloadTooltip } = this.props
+    const { host, experiments, tableHeader, enableDownload, downloadTooltip, downloadFileTypes } = this.props
 
     const displayedFields = tableHeader.map(header => header.dataParam)
 
@@ -206,7 +206,8 @@ class ExperimentTable extends React.Component {
             host,
             enableDownload,
             currentPageData,
-            downloadTooltip
+            downloadTooltip,
+            downloadFileTypes
           }}
           tableHeaderOnChange={this.tableHeaderOnChange}
           tableHeaderOnClick={this.tableHeaderOnClick}
@@ -247,7 +248,13 @@ ExperimentTable.propTypes = {
       label: PropTypes.string.isRequired,
       dataParam: PropTypes.string.isRequired
     })
-  ).isRequired
+  ).isRequired,
+  downloadFileTypes: PropTypes.arrayOf(
+    PropTypes.shape({
+      description: PropTypes.string,
+      id: PropTypes.string
+    })
+  )
 }
 
 ExperimentTable.defaultProps = {

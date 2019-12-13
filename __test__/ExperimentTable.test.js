@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow, mount } from 'enzyme'
-import { getRandomInt, TableCellDiv, data, tableHeader, tableFilters } from './TestUtils'
+import {getRandomInt, data, tableHeader, tableFilters, downloadFileTypes} from './TestUtils'
 import ExperimentTable from '../src/ExperimentTable'
 import TableFooter from '../src/TableFooter'
 import TableContent from '../src/TableContent'
@@ -11,13 +11,13 @@ import _ from 'lodash'
 describe(`ExperimentTable`, () => {
   const props = {
     experiments: data,
+    downloadFileTypes: downloadFileTypes,
     tableHeader: tableHeader,
     tableFilters: tableFilters,
     host: `fool`,
     resource: `bool`,
     enableDownload: true,
     enableIndex: true,
-    TableCellDiv: TableCellDiv,
     downloadTooltip: `<t>A random test tooltip text</t>`
   }
 

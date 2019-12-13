@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { data } from './TestUtils'
+import { data, downloadFileTypes } from './TestUtils'
 
 import TableContent from '../src/TableContent'
 import {alertInvalidFiles} from '../src/TableContent'
@@ -19,6 +19,7 @@ describe(`TableContent`, () => {
   })
 
   const props = {
+    downloadFileTypes: downloadFileTypes,
     enableIndex: true,
     tableHeader: [{
       type: `sort`,

@@ -19,7 +19,7 @@ class ExperimentTable extends React.Component {
       checkedRows: [],
       currentPage: 1,
       entriesPerPage: this.entriesPerPageOptions[0],
-      selectedSearch: ``,
+      selectedSearch: props.initialSearchAll,
       selectedDropdownFilters: [],
       experimentTableFilters: props.tableFilters.map(filter => {
         return {
@@ -247,11 +247,13 @@ ExperimentTable.propTypes = {
       label: PropTypes.string.isRequired,
       dataParam: PropTypes.string.isRequired
     })
-  ).isRequired
+  ).isRequired,
+  initialSearchAll: PropTypes.string.isRequired
 }
 
 ExperimentTable.defaultProps = {
-  species: ``
+  species: ``,
+  initialSearchAll: ``
 }
 
 export default ExperimentTable

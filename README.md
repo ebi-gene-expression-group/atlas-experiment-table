@@ -1,3 +1,5 @@
+# This component has been permanently moved to the [Atlas Components monorepo](https://github.com/ebi-gene-expression-group/atlas-components)
+
 # Atlas experiment table
 We implement a sortable table header and check box table cell for downloading atlas experiments' files. [Evergreen  Table](https://evergreen.segment.com/) component is used in this repository.
 
